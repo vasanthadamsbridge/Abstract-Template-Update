@@ -20,26 +20,42 @@ class formService {
                   },
                 }
               : {}),
-            ...(reqData.tasklistId
-              ? {
-                  _id: new mongoose.Types.ObjectId(reqData.tasklistId),
-                }
-              : {}),
-            ...(reqData.processId
-              ? {
-                  processId: new mongoose.Types.ObjectId(reqData.processId),
-                }
-              : {}),
-            ...(reqData.propertyId
-              ? {
-                  propertyId: new mongoose.Types.ObjectId(reqData.propertyId),
-                }
-              : {}),
-            ...(reqData.tenantId
-              ? {
-                  tenantId: new mongoose.Types.ObjectId(reqData.tenantId),
-                }
-              : {}),
+              ...(reqData.processId && reqData.processId.length > 0
+                ? Array.isArray(reqData.processId)
+                  ? {
+                      processId: { $in: reqData.processId.map((id) => new mongoose.Types.ObjectId(id)) },
+                    }
+                  : {
+                      processId: new mongoose.Types.ObjectId(reqData.processId),
+                    }
+                : {}),
+              ...(reqData.propertyId && reqData.propertyId.length > 0
+                ? Array.isArray(reqData.propertyId)
+                  ? {
+                      propertyId: { $in: reqData.propertyId.map((id) => new mongoose.Types.ObjectId(id)) },
+                    }
+                  : {
+                      propertyId: new mongoose.Types.ObjectId(reqData.propertyId),
+                    }
+                : {}),
+              ...(reqData.tenantId && reqData.tenantId.length > 0
+                ? Array.isArray(reqData.tenantId)
+                  ? {
+                      tenantId: { $in: reqData.tenantId.map((id) => new mongoose.Types.ObjectId(id)) },
+                    }
+                  : {
+                      tenantId: new mongoose.Types.ObjectId(reqData.tenantId),
+                    }
+                : {}),
+              ...(reqData.tasklistId && reqData.tasklistId.length > 0
+                ? Array.isArray(reqData.tasklistId)
+                  ? {
+                      _id: { $in: reqData.tasklistId.map((id) => new mongoose.Types.ObjectId(id)) },
+                    }
+                  : {
+                      _id: new mongoose.Types.ObjectId(reqData.tasklistId),
+                    }
+                : {}),
           },
         },
         {
@@ -167,28 +183,24 @@ class formService {
 
   updateBGORemoveNonLeaseData(tempComp) {
     let isUpdated = false;
+    const labelsToRemove = [
+      "Abstracted Date",
+      "Property ID",
+      "Property Name",
+      "Suite ID",
+      "Floor Number",
+      "Area of Premises"
+    ];
     try {
       tempComp.forEach((comp) => {
         if (comp.type === "tabs") {
           comp.components.forEach((tab) => {
-            if (tab.label === "Rent/Renewals") {
+            if (tab.label === "Basic Info") {
               tab.components.forEach((panel) => {
-                if (panel.type === "panel" && (panel.label === "Base Rent" || panel.title === "Base Rent")) {
-                  panel.components.forEach((item) => {
-                    if (item.type === "table") {
-                      item.label = "Base Rent";
-                      item.rows.forEach((row, rowIdx) => {
-                        if (rowIdx > 0) {
-                          row.forEach((col, colIdx) => {
-                            col.components.forEach((colItem, compIdx) => {
-                              isUpdated = true;
-                              colItem.label = item.rows[0][colIdx].components[compIdx].label;
-                            });
-                          });
-                        }
-                      });
-                    }
-                  });
+                if (panel.type === "panel" && (panel.label === "NON LEASE DATA" || panel.title === "NON LEASE DATA")) {
+                  panel.components = panel.components.filter(
+                    (component) => !labelsToRemove.includes(component.label)
+                  );
                 }
               });
             }
