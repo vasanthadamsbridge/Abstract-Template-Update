@@ -201,6 +201,7 @@ class formService {
                   panel.components = panel.components.filter(
                     (component) => !labelsToRemove.includes(component.label)
                   );
+                  isUpdated = true;
                 }
               });
             }
