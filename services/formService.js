@@ -258,10 +258,8 @@ class formService {
                 if (panel.type === "panel" && (panel.label === "Base Rent" || panel.title === "Base Rent")) {
                   panel.components.forEach((item) => {
                     if (item.type === "table" && item.label === "Base Rent") {
-                      if (rowIdx === 0) {
-                        isUpdated = true;
-                        item.rows[0].unshift(incomeCategoryHeader);
-                      }
+                      isUpdated = true;
+                      item.rows[0].unshift(incomeCategoryHeader);
                       item.rows.forEach((row, rowIdx) => {
                         isUpdated = true;
                         if (rowIdx > 0) {
@@ -273,10 +271,8 @@ class formService {
                 } else if (panel.type === "panel" && (panel.label === "CAM/Operating Expenses" || panel.title === "CAM/Operating Expenses")) {
                   panel.components.forEach((item) => {
                     if (item.type === "table" && item.label === "CAM") {
-                      if (rowIdx === 0) {
-                        isUpdated = true;
-                        item.rows[0].unshift(incomeCategoryHeader);
-                      }
+                      isUpdated = true;
+                      item.rows[0].unshift(incomeCategoryHeader);
                       item.rows.forEach((row, rowIdx) => {
                         isUpdated = true;
                         if (rowIdx > 0) {
