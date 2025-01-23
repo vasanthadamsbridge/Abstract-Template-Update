@@ -20,42 +20,42 @@ class formService {
                   },
                 }
               : {}),
-              ...(reqData.processId && reqData.processId.length > 0
-                ? Array.isArray(reqData.processId)
-                  ? {
-                      processId: { $in: reqData.processId.map((id) => new mongoose.Types.ObjectId(id)) },
-                    }
-                  : {
-                      processId: new mongoose.Types.ObjectId(reqData.processId),
-                    }
-                : {}),
-              ...(reqData.propertyId && reqData.propertyId.length > 0
-                ? Array.isArray(reqData.propertyId)
-                  ? {
-                      propertyId: { $in: reqData.propertyId.map((id) => new mongoose.Types.ObjectId(id)) },
-                    }
-                  : {
-                      propertyId: new mongoose.Types.ObjectId(reqData.propertyId),
-                    }
-                : {}),
-              ...(reqData.tenantId && reqData.tenantId.length > 0
-                ? Array.isArray(reqData.tenantId)
-                  ? {
-                      tenantId: { $in: reqData.tenantId.map((id) => new mongoose.Types.ObjectId(id)) },
-                    }
-                  : {
-                      tenantId: new mongoose.Types.ObjectId(reqData.tenantId),
-                    }
-                : {}),
-              ...(reqData.tasklistId && reqData.tasklistId.length > 0
-                ? Array.isArray(reqData.tasklistId)
-                  ? {
-                      _id: { $in: reqData.tasklistId.map((id) => new mongoose.Types.ObjectId(id)) },
-                    }
-                  : {
-                      _id: new mongoose.Types.ObjectId(reqData.tasklistId),
-                    }
-                : {}),
+            ...(reqData.processId && reqData.processId.length > 0
+              ? Array.isArray(reqData.processId)
+                ? {
+                    processId: { $in: reqData.processId.map((id) => new mongoose.Types.ObjectId(id)) },
+                  }
+                : {
+                    processId: new mongoose.Types.ObjectId(reqData.processId),
+                  }
+              : {}),
+            ...(reqData.propertyId && reqData.propertyId.length > 0
+              ? Array.isArray(reqData.propertyId)
+                ? {
+                    propertyId: { $in: reqData.propertyId.map((id) => new mongoose.Types.ObjectId(id)) },
+                  }
+                : {
+                    propertyId: new mongoose.Types.ObjectId(reqData.propertyId),
+                  }
+              : {}),
+            ...(reqData.tenantId && reqData.tenantId.length > 0
+              ? Array.isArray(reqData.tenantId)
+                ? {
+                    tenantId: { $in: reqData.tenantId.map((id) => new mongoose.Types.ObjectId(id)) },
+                  }
+                : {
+                    tenantId: new mongoose.Types.ObjectId(reqData.tenantId),
+                  }
+              : {}),
+            ...(reqData.tasklistId && reqData.tasklistId.length > 0
+              ? Array.isArray(reqData.tasklistId)
+                ? {
+                    _id: { $in: reqData.tasklistId.map((id) => new mongoose.Types.ObjectId(id)) },
+                  }
+                : {
+                    _id: new mongoose.Types.ObjectId(reqData.tasklistId),
+                  }
+              : {}),
           },
         },
         {
@@ -90,6 +90,8 @@ class formService {
               tempResult = this.updateTangerOutlets(data.components);
             } else if (reqData.type === "BGOREMOVEFIELDSNONLEASEDATA") {
               tempResult = this.updateBGORemoveNonLeaseData(data.components);
+            } else if (reqData.type === "ADDINCOMECATEGORYTANGEROUTLETS") {
+              tempResult = this.updateTangerOutletsIncomeCategory(data.components);
             }
             console.log(tempResult);
             if (tempResult.isUpdated) {
@@ -181,16 +183,124 @@ class formService {
     }
   }
 
+  updateTangerOutletsIncomeCategory(tempComp) {
+    let isUpdated = false;
+    // New Income Category for the first row
+    const incomeCategoryHeader = {
+      components: [
+        {
+          label: "Income Category",
+          content: "Income Category",
+          key: "incomeCategoryHeader",
+          type: "htmlelement",
+          uniqueKey: Math.random().toString(36).substring(2, 8),
+        },
+      ],
+    };
+
+    const incomeCategoryField = {
+      components: [
+        {
+          label: "Income Category",
+          data: {
+            values: [
+              { label: "ABT", value: "ABT" },
+              { label: "ADV", value: "ADV" },
+              { label: "CAM", value: "CAM" },
+              { label: "FCC", value: "FCC" },
+              { label: "FXC", value: "FXC" },
+              { label: "GAS", value: "GAS" },
+              { label: "INS", value: "INS" },
+              { label: "OVR", value: "OVR" },
+              { label: "POS", value: "POS" },
+              { label: "RNT", value: "RNT" },
+              { label: "RTX", value: "RTX" },
+              { label: "SNO", value: "SNO" },
+              { label: "SPR", value: "SPR" },
+              { label: "TAX", value: "TAX" },
+              { label: "WTR", value: "WTR" },
+              { label: "FTI", value: "FTI" },
+              { label: "FTP", value: "FTP" },
+              { label: "OBR", value: "OBR" },
+              { label: "OFC", value: "OFC" },
+              { label: "OTX", value: "OTX" },
+              { label: "POP", value: "POP" },
+              { label: "PPR", value: "PPR" },
+              { label: "SLR", value: "SLR" },
+              { label: "SLP", value: "SLP" },
+              { label: "SOR", value: "SOR" },
+              { label: "SOP", value: "SOP" },
+              { label: "APY", value: "APY" },
+              { label: "CPY", value: "CPY" },
+              { label: "IPY", value: "IPY" },
+              { label: "PPY", value: "PPY" },
+              { label: "RPY", value: "RPY" },
+              { label: "TPY", value: "TPY" },
+              { label: "VPY", value: "VPY" },
+              { label: "WPY", value: "WPY" },
+            ],
+          },
+          key: "incomeCategory",
+          properties: {
+            aliasName: "Income Category Base Rent",
+          },
+          type: "select",
+          uniqueKey: Math.random().toString(36).substring(2, 8),
+        },
+      ],
+    };
+    try {
+      tempComp.forEach((comp) => {
+        if (comp.type === "tabs") {
+          comp.components.forEach((tab) => {
+            if (tab.label === "Charge Schedules") {
+              tab.components.forEach((panel) => {
+                if (panel.type === "panel" && (panel.label === "Base Rent" || panel.title === "Base Rent")) {
+                  panel.components.forEach((item) => {
+                    if (item.type === "table" && item.label === "Base Rent") {
+                      if (rowIdx === 0) {
+                        isUpdated = true;
+                        item.rows[0].unshift(incomeCategoryHeader);
+                      }
+                      item.rows.forEach((row, rowIdx) => {
+                        isUpdated = true;
+                        if (rowIdx > 0) {
+                          item.rows[rowIdx].unshift(incomeCategoryField);
+                        }
+                      });
+                    }
+                  });
+                } else if (panel.type === "panel" && (panel.label === "CAM/Operating Expenses" || panel.title === "CAM/Operating Expenses")) {
+                  panel.components.forEach((item) => {
+                    if (item.type === "table" && item.label === "CAM") {
+                      if (rowIdx === 0) {
+                        isUpdated = true;
+                        item.rows[0].unshift(incomeCategoryHeader);
+                      }
+                      item.rows.forEach((row, rowIdx) => {
+                        isUpdated = true;
+                        if (rowIdx > 0) {
+                          item.rows[rowIdx].unshift(incomeCategoryField);
+                        }
+                      });
+                    }
+                  });
+                }
+              });
+            }
+          });
+        }
+      });
+      return { isUpdated, tempComp };
+    } catch (err) {
+      console.log(err);
+      throw err;
+    }
+  }
+
   updateBGORemoveNonLeaseData(tempComp) {
     let isUpdated = false;
-    const labelsToRemove = [
-      "Abstracted Date",
-      "Property ID",
-      "Property Name",
-      "Suite ID",
-      "Floor Number",
-      "Area of Premises"
-    ];
+    const labelsToRemove = ["Abstracted Date", "Property ID", "Property Name", "Suite ID", "Floor Number", "Area of Premises"];
     try {
       tempComp.forEach((comp) => {
         if (comp.type === "tabs") {
@@ -198,9 +308,7 @@ class formService {
             if (tab.label === "Basic Info") {
               tab.components.forEach((panel) => {
                 if (panel.type === "panel" && (panel.label === "NON LEASE DATA" || panel.title === "NON LEASE DATA")) {
-                  panel.components = panel.components.filter(
-                    (component) => !labelsToRemove.includes(component.label)
-                  );
+                  panel.components = panel.components.filter((component) => !labelsToRemove.includes(component.label));
                   isUpdated = true;
                 }
               });
@@ -427,12 +535,12 @@ class formService {
               // shiftLeaseInfoFieldToTenantSpaceInfo(fromPanel, toPanel, componentLabel);
               let componentsToMove = [];
               tab.components.forEach((panel) => {
-                if(panel.type === "panel" && (panel.label === "Lease Information" || panel.title === "Lease Information")) {
+                if (panel.type === "panel" && (panel.label === "Lease Information" || panel.title === "Lease Information")) {
                   isUpdated = true;
                   componentsToMove = panel.components.filter((component) => componentLabel.includes(component.label));
                   panel.components = panel.components.filter((component) => !componentLabel.includes(component.label));
                 }
-                if(panel.type === "panel" && (panel.label === "Tenant Space Information" || panel.title === "Tenant Space Information")) {
+                if (panel.type === "panel" && (panel.label === "Tenant Space Information" || panel.title === "Tenant Space Information")) {
                   isUpdated = true;
                   panel.components.push(...componentsToMove);
                 }
@@ -473,12 +581,12 @@ class formService {
               // shiftLeaseInfoFieldToTenantSpaceInfo(fromPanel, toPanel, componentLabel);
               let componentsToMove = [];
               tab.components.forEach((panel) => {
-                if(panel.type === "panel" && (panel.label === "Lease Information" || panel.title === "Lease Information")) {
+                if (panel.type === "panel" && (panel.label === "Lease Information" || panel.title === "Lease Information")) {
                   isUpdated = true;
                   componentsToMove = panel.components.filter((component) => componentLabel.includes(component.label));
                   panel.components = panel.components.filter((component) => !componentLabel.includes(component.label));
                 }
-                if(panel.type === "panel" && (panel.label === "Tenant Space Information" || panel.title === "Tenant Space Information")) {
+                if (panel.type === "panel" && (panel.label === "Tenant Space Information" || panel.title === "Tenant Space Information")) {
                   isUpdated = true;
                   panel.components.push(...componentsToMove);
                 }
@@ -584,10 +692,10 @@ class formService {
             comp.components.forEach((tab, tabIndex) => {
               tab.components &&
                 tab.components.forEach((panel, panelIndex) => {
-                  if (panel.type === "panel") {
+                  if (panel.type === "panel" && panel.isDeleted !== true) {
                     panel.components &&
                       panel.components.forEach((item, itemIndex) => {
-                        if (item.type === "table") {
+                        if (item.type === "table" && item.isDeleted !== true) {
                           {
                             item.rows &&
                               item.rows.forEach((row, rowIndex) => {
@@ -601,25 +709,25 @@ class formService {
                                           ...colItem,
                                           label: firstItem.label ? firstItem.label : firstItem.title ? firstItem.title : firstItem.content,
                                         };
-                                        const field = this.fieldItems(tableField, tab, panel, item, compIndex, tabIndex, panelIndex, itemIndex, true);
+                                        const field = this.fieldItems(tableField, tab, panel, item, compIndex, tabIndex, panelIndex, itemIndex, rowIndex, true);
                                         fields.push(field);
                                       });
                                   });
                               });
                           }
-                        } else if (item.type === "columns") {
+                        } else if (item.type === "columns" && item.isDeleted !== true) {
                           {
                             item.columns &&
                               item.columns.forEach((col, colIndex) => {
                                 col &&
                                   col.components.length &&
                                   col.components.forEach((colItem, index) => {
-                                    const field = this.fieldItems(colItem, tab, panel, item, compIndex, tabIndex, panelIndex, itemIndex, true);
+                                    const field = this.fieldItems(colItem, tab, panel, item, compIndex, tabIndex, panelIndex, itemIndex, 0, true);
                                     fields.push(field);
                                   });
                               });
                           }
-                        } else if (item.type === "container") {
+                        } else if (item.type === "container" && item.isDeleted !== true) {
                           {
                             item.components.length &&
                               item.components.forEach((comp, index) => {
@@ -630,19 +738,19 @@ class formService {
                                         col &&
                                           col.components.length &&
                                           col.components.forEach((colItem, index) => {
-                                            const field = this.fieldItems(colItem, tab, panel, item, compIndex, tabIndex, panelIndex, itemIndex, true);
+                                            const field = this.fieldItems(colItem, tab, panel, item, compIndex, tabIndex, panelIndex, itemIndex, 0, true);
                                             fields.push(field);
                                           });
                                       });
                                   }
                                 } else {
-                                  const field = this.fieldItems(comp, tab, panel, item, compIndex, tabIndex, panelIndex, itemIndex, true);
+                                  const field = this.fieldItems(comp, tab, panel, item, compIndex, tabIndex, panelIndex, itemIndex, 0, true);
                                   fields.push(field);
                                 }
                               });
                           }
                         } else {
-                          const field = this.fieldItems(item, tab, panel, null, compIndex, tabIndex, panelIndex, itemIndex, false);
+                          const field = this.fieldItems(item, tab, panel, null, compIndex, tabIndex, panelIndex, itemIndex, 0, false);
                           fields.push(field);
                         }
                       });
@@ -654,7 +762,7 @@ class formService {
     return fields;
   }
 
-  fieldItems(subItem, tab, panel, item, compIndex, tabIndex, panelIndex, itemIndex, isSection) {
+  fieldItems(subItem, tab, panel, item, compIndex, tabIndex, panelIndex, itemIndex, rowIndex, isSection) {
     return {
       label: subItem.label,
       type: subItem.type,
@@ -667,7 +775,7 @@ class formService {
       properties: subItem.properties,
       isSilent: subItem.isSilent,
       isDuplicate: subItem.isDuplicate,
-      isDeleted: subItem.isDeleted,
+      isDeleted: subItem.isDeleted || item.isDeleted,
       isSection: isSection,
       hideLabel: subItem.hideLabel,
       fileId: subItem.fileId ? subItem.fileId : undefined,
@@ -680,6 +788,7 @@ class formService {
       panelName: panel.title,
       sectionName: item ? item.label : null,
       itemIndex: itemIndex,
+      rowIndex: rowIndex ? rowIndex : 0,
       itemId: `item-${subItem.key}`,
     };
   }
