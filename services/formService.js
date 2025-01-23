@@ -771,7 +771,7 @@ class formService {
       properties: subItem.properties,
       isSilent: subItem.isSilent,
       isDuplicate: subItem.isDuplicate,
-      isDeleted: subItem.isDeleted || item.isDeleted,
+      isDeleted: subItem.isDeleted || item?.isDeleted,
       isSection: isSection,
       hideLabel: subItem.hideLabel,
       fileId: subItem.fileId ? subItem.fileId : undefined,
