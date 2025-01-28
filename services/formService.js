@@ -68,6 +68,7 @@ class formService {
 
       if (leaseReportTemplate && reqData.type) {
         const templates = leaseReportTemplate.filter((template) => template.templateId);
+        var count = 0;
         for (let temp of templates) {
           // if (!temp.templateFieldsId) {
           const documents = await abstractTemplateModel.findById({ _id: new mongoose.Types.ObjectId(temp.templateId) });
@@ -92,8 +93,12 @@ class formService {
               tempResult = this.updateBGORemoveNonLeaseData(data.components);
             } else if (reqData.type === "ADDINCOMECATEGORYTANGEROUTLETS") {
               tempResult = this.updateTangerOutletsIncomeCategory(data.components);
+            } else if (reqData.type === "BGOBASERENTTABLEANDBGOTABCONVENANTS") {
+              tempResult = this.updateBGOBaseRentTableAndConvenantsTab(data.components);
             }
+            count = count + 1;
             console.log(tempResult);
+            console.log("count",count);
             if (tempResult.isUpdated) {
               data.components = tempResult.tempComp;
               await abstractTemplateModel.updateOne(
@@ -142,6 +147,157 @@ class formService {
         }
       }
     } catch (err) {
+      throw err;
+    }
+  }
+
+  async updateTemplateFieldItems(reqData) {
+    try {
+      const leaseReportTemplate = await taskListModel.aggregate([
+        {
+          $match: {
+            companyId: new mongoose.Types.ObjectId(reqData.companyId),
+            active: true,
+            BBForms_AbsData_id: { $exists: true, $ne: null },
+            ...(reqData.fromDate && reqData.toDate
+              ? {
+                  createdAt: {
+                    $gte: new Date(reqData.fromDate),
+                    $lte: new Date(reqData.toDate),
+                  },
+                }
+              : {}),
+            ...(reqData.processId && reqData.processId.length > 0
+              ? Array.isArray(reqData.processId)
+                ? {
+                    processId: { $in: reqData.processId.map((id) => new mongoose.Types.ObjectId(id)) },
+                  }
+                : {
+                    processId: new mongoose.Types.ObjectId(reqData.processId),
+                  }
+              : {}),
+            ...(reqData.propertyId && reqData.propertyId.length > 0
+              ? Array.isArray(reqData.propertyId)
+                ? {
+                    propertyId: { $in: reqData.propertyId.map((id) => new mongoose.Types.ObjectId(id)) },
+                  }
+                : {
+                    propertyId: new mongoose.Types.ObjectId(reqData.propertyId),
+                  }
+              : {}),
+            ...(reqData.tenantId && reqData.tenantId.length > 0
+              ? Array.isArray(reqData.tenantId)
+                ? {
+                    tenantId: { $in: reqData.tenantId.map((id) => new mongoose.Types.ObjectId(id)) },
+                  }
+                : {
+                    tenantId: new mongoose.Types.ObjectId(reqData.tenantId),
+                  }
+              : {}),
+            ...(reqData.tasklistId && reqData.tasklistId.length > 0
+              ? Array.isArray(reqData.tasklistId)
+                ? {
+                    _id: { $in: reqData.tasklistId.map((id) => new mongoose.Types.ObjectId(id)) },
+                  }
+                : {
+                    _id: new mongoose.Types.ObjectId(reqData.tasklistId),
+                  }
+              : {}),
+          },
+        },
+        {
+          $project: {
+            _id: 0,
+            templateId: "$BBForms_AbsData_id",
+          },
+        },
+      ]);
+
+      if (leaseReportTemplate && reqData.type) {
+        const templates = leaseReportTemplate.filter((template) => template.templateId);
+        var count = 0;
+        for (let temp of templates) {
+          const documents = await abstractTemplateModel.findById({ _id: new mongoose.Types.ObjectId(temp.templateId) });
+          if (documents) {
+            let data = JSON.parse(JSON.stringify(documents));
+            count = count + 1;
+            console.log("count",count);
+              let fields = this.loadTemplateFields(data.components);
+              if (data.templateFieldsId) {
+                await abstractTemplateFieldModel.updateOne(
+                  { _id: new mongoose.Types.ObjectId(data.templateFieldsId) },
+                  {
+                    $set: {
+                      fields: fields,
+                      updatedAt: new Date(),
+                    },
+                  }
+                );
+              } else {
+                let insert_data = {};
+                insert_data.fields = fields;
+                insert_data.createdAt = new Date();
+                insert_data.updatedAt = new Date();
+                insert_data.active = true;
+                const new_data = new abstractTemplateFieldModel(insert_data);
+                let doc = await new_data.save();
+                if (doc) {
+                  await abstractTemplateModel.updateOne(
+                    { _id: new mongoose.Types.ObjectId(temp.templateId) },
+                    {
+                      $set: {
+                        templateFieldsId: new mongoose.Types.ObjectId(doc._id),
+                        updatedAt: new Date(),
+                      },
+                    }
+                  );
+                }
+              }
+          }
+        }
+      }
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  updateBGOBaseRentTableAndConvenantsTab(tempComp) {
+    let isUpdated = false;
+    try {
+      tempComp.forEach((comp) => {
+        if (comp.type === "tabs") {
+          comp.components.forEach((tab) => {
+            if (tab.label === "Rent/Renewals") {
+              tab.components.forEach((panel) => {
+                if (panel.type === "panel" && (panel.label === "Base Rent" || panel.title === "Base Rent")) {
+                  panel.components.forEach((item) => {
+                    if (item.type === "table") {
+                      item.label = "Base Rent";
+                      item.rows.forEach((row, rowIdx) => {
+                        if (rowIdx > 0) {
+                          row.forEach((col, colIdx) => {
+                            col.components.forEach((colItem, compIdx) => {
+                              isUpdated = true;
+                              colItem.label = item.rows[0][colIdx].components[compIdx].label;
+                            });
+                          });
+                        }
+                      });
+                    }
+                  });
+                }
+              });
+            }
+            if (tab.label === "Convenants") {
+              isUpdated = true;
+              tab.label = "Covenants";
+            }
+          });
+        }
+      });
+      return { isUpdated, tempComp };
+    } catch (err) {
+      console.log(err);
       throw err;
     }
   }
