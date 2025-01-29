@@ -91,14 +91,18 @@ class formService {
               tempResult = this.updateTangerOutlets(data.components);
             } else if (reqData.type === "BGOREMOVEFIELDSNONLEASEDATA") {
               tempResult = this.updateBGORemoveNonLeaseData(data.components);
-            } else if (reqData.type === "ADDINCOMECATEGORYTANGEROUTLETS") {
+            } else if (reqData.type === "TANGEROUTLETSADDINCOMECATEGORY") {
               tempResult = this.updateTangerOutletsIncomeCategory(data.components);
             } else if (reqData.type === "BGOBASERENTTABLEANDBGOTABCONVENANTS") {
               tempResult = this.updateBGOBaseRentTableAndConvenantsTab(data.components);
+            } else if (reqData.type === "PREPINCOMECATEGORY") {
+              tempResult = this.updatePrepIncomeCategory(data.components);
+            } else if (reqData.type === "BERKLEYINCOMECATEGORY") {
+              tempResult = this.updateBerkleyIncomeCategory(data.components);
             }
             count = count + 1;
             console.log(tempResult);
-            console.log("count",count);
+            console.log("count", count);
             if (tempResult.isUpdated) {
               data.components = tempResult.tempComp;
               await abstractTemplateModel.updateOne(
@@ -221,38 +225,39 @@ class formService {
           if (documents) {
             let data = JSON.parse(JSON.stringify(documents));
             count = count + 1;
-            console.log("count",count);
-              let fields = this.loadTemplateFields(data.components);
-              if (data.templateFieldsId) {
-                await abstractTemplateFieldModel.updateOne(
-                  { _id: new mongoose.Types.ObjectId(data.templateFieldsId) },
+            console.log("count", count);
+            console.log("TemplateId", temp.templateId);
+            let fields = this.loadTemplateFields(data.components);
+            if (data.templateFieldsId) {
+              await abstractTemplateFieldModel.updateOne(
+                { _id: new mongoose.Types.ObjectId(data.templateFieldsId) },
+                {
+                  $set: {
+                    fields: fields,
+                    updatedAt: new Date(),
+                  },
+                }
+              );
+            } else {
+              let insert_data = {};
+              insert_data.fields = fields;
+              insert_data.createdAt = new Date();
+              insert_data.updatedAt = new Date();
+              insert_data.active = true;
+              const new_data = new abstractTemplateFieldModel(insert_data);
+              let doc = await new_data.save();
+              if (doc) {
+                await abstractTemplateModel.updateOne(
+                  { _id: new mongoose.Types.ObjectId(temp.templateId) },
                   {
                     $set: {
-                      fields: fields,
+                      templateFieldsId: new mongoose.Types.ObjectId(doc._id),
                       updatedAt: new Date(),
                     },
                   }
                 );
-              } else {
-                let insert_data = {};
-                insert_data.fields = fields;
-                insert_data.createdAt = new Date();
-                insert_data.updatedAt = new Date();
-                insert_data.active = true;
-                const new_data = new abstractTemplateFieldModel(insert_data);
-                let doc = await new_data.save();
-                if (doc) {
-                  await abstractTemplateModel.updateOne(
-                    { _id: new mongoose.Types.ObjectId(temp.templateId) },
-                    {
-                      $set: {
-                        templateFieldsId: new mongoose.Types.ObjectId(doc._id),
-                        updatedAt: new Date(),
-                      },
-                    }
-                  );
-                }
               }
+            }
           }
         }
       }
@@ -263,6 +268,282 @@ class formService {
 
   updateBGOBaseRentTableAndConvenantsTab(tempComp) {
     let isUpdated = false;
+    const incomeCategoryHeader = {
+      components: [
+        {
+          label: "Income Category",
+          content: "Income Category",
+          key: "incomeCategoryHeader",
+          type: "htmlelement",
+          uniqueKey: Math.random().toString(36).substring(2, 8),
+        },
+      ],
+    };
+
+    const incomeCategoryField = {
+      label: "Income Category",
+      data: {
+        values: [
+          {
+            label: "ABTE",
+            value: "abte",
+          },
+          {
+            label: "ADM1",
+            value: "adm1",
+          },
+          {
+            label: "ADMI",
+            value: "admi",
+          },
+          {
+            label: "ADMISL",
+            value: "admisl",
+          },
+          {
+            label: "AGIADJ",
+            value: "agiadj",
+          },
+          {
+            label: "CAMREC",
+            value: "camrec",
+          },
+          {
+            label: "CAMTAXD",
+            value: "camtaxd",
+          },
+          {
+            label: "ELEC",
+            value: "elec",
+          },
+          {
+            label: "FCOP",
+            value: "fcop",
+          },
+          {
+            label: "FRAR",
+            value: "frar",
+          },
+          {
+            label: "FREECOMM",
+            value: "freecomm",
+          },
+          {
+            label: "FRNT",
+            value: "frnt",
+          },
+          {
+            label: "FSTL",
+            value: "fstl",
+          },
+          {
+            label: "HVAC",
+            value: "hvac",
+          },
+          {
+            label: "JANS",
+            value: "jans",
+          },
+          {
+            label: "METR",
+            value: "metr",
+          },
+          {
+            label: "MGMT",
+            value: "mgmt",
+          },
+          {
+            label: "MGMTSL",
+            value: "mgmtsl",
+          },
+          {
+            label: "MMTR",
+            value: "mmtr",
+          },
+          {
+            label: "OBAR",
+            value: "obar",
+          },
+          {
+            label: "OPEX",
+            value: "opex",
+          },
+          {
+            label: "OPEXSL",
+            value: "opexsl",
+          },
+          {
+            label: "OPX1",
+            value: "opx1",
+          },
+          {
+            label: "OPX2",
+            value: "opx2",
+          },
+          {
+            label: "RFRT",
+            value: "rfrt",
+          },
+          {
+            label: "RCONDEV",
+            value: "rcondev",
+          },
+          {
+            label: "OINL",
+            value: "oinl",
+          },
+          {
+            label: "OKIO",
+            value: "okio",
+          },
+          {
+            label: "PADM",
+            value: "padm",
+          },
+          {
+            label: "PFCO",
+            value: "pfco",
+          },
+          {
+            label: "POPX",
+            value: "popx",
+          },
+          {
+            label: "PPTX",
+            value: "pptx",
+          },
+          {
+            label: "PTAX",
+            value: "ptax",
+          },
+          {
+            label: "PTAXSL",
+            value: "ptaxsl",
+          },
+          {
+            label: "PTX1",
+            value: "ptx1",
+          },
+          {
+            label: "PTX6",
+            value: "ptx6",
+          },
+          {
+            label: "PUTI",
+            value: "puti",
+          },
+          {
+            label: "PYMF",
+            value: "pymf",
+          },
+          {
+            label: "PYRECOV",
+            value: "pyrecov",
+          },
+          {
+            label: "RFRT",
+            value: "rfrt",
+          },
+          {
+            label: "RNTE",
+            value: "rnte",
+          },
+          {
+            label: "RNTF",
+            value: "rntf",
+          },
+          {
+            label: "RNTG",
+            value: "rntg",
+          },
+          {
+            label: "RNTI",
+            value: "rnti",
+          },
+          {
+            label: "RNTL",
+            value: "rntl",
+          },
+          {
+            label: "RNTNORR",
+            value: "rntnorr",
+          },
+          {
+            label: "RNTO",
+            value: "rnto",
+          },
+          {
+            label: "RNTOSL",
+            value: "rntosl",
+          },
+          {
+            label: "RNTP",
+            value: "rntp",
+          },
+          {
+            label: "RNTR",
+            value: "rntr",
+          },
+          {
+            label: "ROFFICE",
+            value: "roffice",
+          },
+          {
+            label: "RTPY",
+            value: "rtpy",
+          },
+          {
+            label: "RGOF",
+            value: "rgof",
+          },
+          {
+            label: "RGRT",
+            value: "rgrt",
+          },
+          {
+            label: "RINL",
+            value: "rinl",
+          },
+          {
+            label: "RNT",
+            value: "rnt",
+          },
+          {
+            label: "RNTA",
+            value: "rnta",
+          },
+          {
+            label: "RNTC",
+            value: "rntc",
+          },
+          {
+            label: "RNTCONFM",
+            value: "rntconfm",
+          },
+          {
+            label: "RNTCONLT",
+            value: "rntconlt",
+          },
+          {
+            label: "RNTCONR",
+            value: "rntconr",
+          },
+          {
+            label: "RFOF",
+            value: "rfof",
+          },
+          {
+            label: "STEA",
+            value: "stea",
+          },
+        ],
+      },
+      key: "incomeCategory",
+      properties: {
+        a: "Income Category",
+      },
+      type: "select",
+    };
     try {
       tempComp.forEach((comp) => {
         if (comp.type === "tabs") {
@@ -281,6 +562,45 @@ class formService {
                               colItem.label = item.rows[0][colIdx].components[compIdx].label;
                             });
                           });
+                        }
+                      });
+                    }
+                    if (item.type === "table") {
+                      isUpdated = true;
+                      item.label = "Base Rent";
+                      item.rows[0].unshift(incomeCategoryHeader);
+                      item.rows.forEach((row, rowIdx) => {
+                        isUpdated = true;
+                        if (rowIdx > 0) {
+                          item.rows[rowIdx].unshift(incomeCategoryField);
+                        }
+                      });
+                    }
+                  });
+                }
+                if (panel.type === "panel" && (panel.label === "Renewal Options" || panel.title === "Renewal Options")) {
+                  panel.components.forEach((item) => {
+                    if (item.type === "table") {
+                      item.label = "Renewal Rent";
+                      item.rows.forEach((row, rowIdx) => {
+                        if (rowIdx > 0) {
+                          row.forEach((col, colIdx) => {
+                            col.components.forEach((colItem, compIdx) => {
+                              isUpdated = true;
+                              colItem.label = item.rows[0][colIdx].components[compIdx].label;
+                            });
+                          });
+                        }
+                      });
+                    }
+                    if (item.type === "table") {
+                      isUpdated = true;
+                      item.label = "Renewal Rent";
+                      item.rows[0].unshift(incomeCategoryHeader);
+                      item.rows.forEach((row, rowIdx) => {
+                        isUpdated = true;
+                        if (rowIdx > 0) {
+                          item.rows[rowIdx].unshift(incomeCategoryField);
                         }
                       });
                     }
@@ -433,6 +753,278 @@ class formService {
                         isUpdated = true;
                         if (rowIdx > 0) {
                           item.rows[rowIdx].unshift(incomeCategoryField);
+                        }
+                      });
+                    }
+                  });
+                }
+              });
+            }
+          });
+        }
+      });
+      return { isUpdated, tempComp };
+    } catch (err) {
+      console.log(err);
+      throw err;
+    }
+  }
+
+  updatePrepIncomeCategory(tempComp) {
+    let isUpdated = false;
+    // New Income Category for the first row
+    const incomeCategoryHeader = {
+      components: [
+        {
+          label: "Income Category",
+          content: "Income Category",
+          key: "incomeCategoryHeader",
+          type: "htmlelement",
+          uniqueKey: Math.random().toString(36).substring(2, 8),
+        },
+      ],
+    };
+
+    const incomeCategoryField = {
+      label: "Income Category",
+      data: {
+        values: [
+          {
+            label: "RNT",
+            value: "rnt",
+          },
+          {
+            label: "ABA",
+            value: "aba",
+          },
+          {
+            label: "XXX",
+            value: "xxx",
+          },
+          {
+            label: "ZZZ",
+            value: "zzz",
+          },
+          {
+            label: "FCM",
+            value: "fcm",
+          },
+          {
+            label: "CMN",
+            value: "cmn",
+          },
+          {
+            label: "PTX",
+            value: "ptx",
+          },
+          {
+            label: "INS",
+            value: "ins",
+          },
+          {
+            label: "HLD",
+            value: "hld",
+          },
+        ],
+      },
+      key: "incomeCategory",
+      properties: {
+        aliasName: "Income Category Base Rent",
+      },
+      type: "select",
+    };
+    try {
+      tempComp.forEach((comp) => {
+        if (comp.type === "tabs") {
+          comp.components.forEach((tab) => {
+            if (tab.label === "Billing") {
+              tab.components.forEach((panel) => {
+                if (panel.type === "panel" && (panel.label === "Base Rent" || panel.title === "Base Rent")) {
+                  panel.components.forEach((item) => {
+                    if (item.type === "table" && item.label === "Base Rent") {
+                      isUpdated = true;
+                      item.rows[0].unshift(incomeCategoryHeader);
+                      item.rows.forEach((row, rowIdx) => {
+                        isUpdated = true;
+                        if (rowIdx > 0) {
+                          item.rows[rowIdx].unshift(incomeCategoryField);
+                        }
+                      });
+                    }
+                  });
+                }
+              });
+            } else if (tab.label === "Categories/Dates") {
+              tab.components.forEach((panel) => {
+                if (panel.type === "panel" && (panel.label === "Lease Options" || panel.title === "Lease Options")) {
+                  panel.components.forEach((item) => {
+                    if (item.type === "table" && item.label === "Lease Options") {
+                      isUpdated = true;
+                      item.rows[0].unshift(incomeCategoryHeader);
+                      item.rows.forEach((row, rowIdx) => {
+                        isUpdated = true;
+                        if (rowIdx > 0) {
+                          item.rows[rowIdx].unshift(incomeCategoryField);
+                        }
+                      });
+                    }
+                  });
+                }
+              });
+            }
+          });
+        }
+      });
+      return { isUpdated, tempComp };
+    } catch (err) {
+      console.log(err);
+      throw err;
+    }
+  }
+
+  updateBerkleyIncomeCategory(tempComp) {
+    let isUpdated = false;
+    // New Income Category for the first row
+    const incomeCategoryHeader = {
+      components: [
+        {
+          label: "Income Category",
+          content: "Income Category",
+          key: "incomeCategoryHeader",
+          type: "htmlelement",
+          uniqueKey: Math.random().toString(36).substring(2, 8),
+        },
+      ],
+    };
+
+    const incomeCategoryField = {
+      label: "Income Category",
+      hideLabel: true,
+      data: {
+        values: [
+          {
+            label: "9signage",
+            value: "9Signage",
+          },
+          {
+            label: "adm",
+            value: "adm",
+          },
+          {
+            label: "brn",
+            value: "brn",
+          },
+          {
+            label: "caest",
+            value: "caest",
+          },
+          {
+            label: "camwuest",
+            value: "camwuest",
+          },
+          {
+            label: "Ccon",
+            value: "ccon",
+          },
+          {
+            label: "Cfrn",
+            value: "cfrn",
+          },
+          {
+            label: "CON",
+            value: "con",
+          },
+          {
+            label: "defrent",
+            value: "defrent",
+          },
+          {
+            label: "elec",
+            value: "elec",
+          },
+          {
+            label: "frn",
+            value: "frn",
+          },
+          {
+            label: "gas",
+            value: "gas",
+          },
+          {
+            label: "hold",
+            value: "hold",
+          },
+          {
+            label: "ins",
+            value: "ins",
+          },
+          {
+            label: "mis",
+            value: "mis",
+          },
+          {
+            label: "oewotest",
+            value: "oewotest",
+          },
+          {
+            label: "opexest",
+            value: "opexest",
+          },
+          {
+            label: "park",
+            value: "park",
+          },
+          {
+            label: "prn",
+            value: "prn",
+          },
+          {
+            label: "ptx",
+            value: "ptx",
+          },
+          {
+            label: "utl",
+            value: "utl",
+          },
+          {
+            label: "was",
+            value: "was",
+          },
+        ],
+      },
+      key: "frequency1",
+      properties: {
+        aliasName: "Income Category Base Rent",
+      },
+      type: "select",
+    };
+    try {
+      tempComp.forEach((comp) => {
+        if (comp.type === "tabs") {
+          comp.components.forEach((tab) => {
+            if (tab.label === "Charge Schedules") {
+              tab.components.forEach((panel) => {
+                if (panel.type === "panel" && (panel.label === "Recurring Charges" || panel.title === "Recurring Charges")) {
+                  panel.components.forEach((item) => {
+                    if (item.type === "table" && item.label === "Base Rent") {
+                      isUpdated = true;
+                      item.rows[0].unshift(incomeCategoryHeader);
+                      item.rows.forEach((row, rowIdx) => {
+                        isUpdated = true;
+                        if (rowIdx > 0) {
+                          item.rows[rowIdx].unshift(incomeCategoryField);
+                          item.rows[rowIdx].slice(0, -1); 
+                        }
+                      });
+                    }
+                    if (item.type === "table" && item.label === "Free Rent/Abatement") {
+                      isUpdated = true;
+                      item.rows[0].unshift(incomeCategoryHeader);
+                      item.rows.forEach((row, rowIdx) => {
+                        isUpdated = true;
+                        if (rowIdx > 0) {
+                          item.rows[rowIdx].unshift(incomeCategoryField);
+                          item.rows[rowIdx].slice(0, -1); 
                         }
                       });
                     }

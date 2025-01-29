@@ -1,4 +1,4 @@
-const { updateTemplateItems } = require("../controllers/formController");
+const { updateTemplateItems, updateTemplateFieldItems } = require("../controllers/formController");
 
 const router = require("express").Router();
 
