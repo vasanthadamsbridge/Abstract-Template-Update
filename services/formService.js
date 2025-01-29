@@ -1017,7 +1017,7 @@ class formService {
                         }
                       });
                     }
-                    if (item.type === "table" && item.label === "Free Rent/Abatement") {
+                    if (item.type === "table" && (item.label === "Free Rent/Abatement" || item.label === "Free Rent")) {
                       isUpdated = true;
                       item.rows[0].unshift(incomeCategoryHeader);
                       item.rows.forEach((row, rowIdx) => {
@@ -1442,10 +1442,12 @@ class formService {
                         if (item.type === "table" && item.isDeleted !== true) {
                           {
                             item.rows &&
-                              item.rows.forEach((row, rowIndex) => {
+                            item.rows.forEach((row, rowIndex) => {
+                                console.log(row);
                                 row &&
-                                  row.forEach((col, colIndex) => {
-                                    col &&
+                                row.forEach((col, colIndex) => {
+                                    console.log(col)
+                                    col && col.components &&
                                       col.components.length &&
                                       col.components.forEach((colItem, index) => {
                                         const firstItem = item.rows[0][colIndex].components[index];
@@ -1463,7 +1465,7 @@ class formService {
                           {
                             item.columns &&
                               item.columns.forEach((col, colIndex) => {
-                                col &&
+                                col && col.components &&
                                   col.components.length &&
                                   col.components.forEach((colItem, index) => {
                                     const field = this.fieldItems(colItem, tab, panel, item, compIndex, tabIndex, panelIndex, itemIndex, 0, true);
@@ -1479,7 +1481,7 @@ class formService {
                                   {
                                     comp.columns &&
                                       comp.columns.forEach((col, colIndex) => {
-                                        col &&
+                                        col && col.components &&
                                           col.components.length &&
                                           col.components.forEach((colItem, index) => {
                                             const field = this.fieldItems(colItem, tab, panel, item, compIndex, tabIndex, panelIndex, itemIndex, 0, true);
