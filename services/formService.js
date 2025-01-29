@@ -1014,7 +1014,7 @@ class formService {
                         if (rowIdx > 0) {
                           item.rows[rowIdx].unshift(incomeCategoryField);
                           item.rows[rowIdx] = item.rows[rowIdx].filter(col => 
-                            !col.components.some(component => component.label === "Frequency")
+                            col.component && !col.components.some(component => component.label === "Frequency")
                           );
                         }
                       });
@@ -1027,7 +1027,7 @@ class formService {
                         if (rowIdx > 0) {
                           item.rows[rowIdx].unshift(incomeCategoryField);
                           item.rows[rowIdx] = item.rows[rowIdx].filter(col => 
-                            !col.components.some(component => component.label === "Frequency")
+                            col.component && !col.components.some(component => component.label === "Frequency")
                           );
                         }
                       });
