@@ -1009,6 +1009,9 @@ class formService {
                     if (item.type === "table" && item.label === "Base Rent") {
                       isUpdated = true;
                       item.rows[0].unshift(incomeCategoryHeader);
+                      item.rows[0] = item.rows[0].filter(col => 
+                        col.component && !col.components.some(component => component.label === "Frequency")
+                      );
                       item.rows.forEach((row, rowIdx) => {
                         isUpdated = true;
                         if (rowIdx > 0) {
@@ -1022,6 +1025,9 @@ class formService {
                     if (item.type === "table" && (item.label === "Free Rent/Abatement" || item.label === "Free Rent")) {
                       isUpdated = true;
                       item.rows[0].unshift(incomeCategoryHeader);
+                      item.rows[0] = item.rows[0].filter(col => 
+                        col.component && !col.components.some(component => component.label === "Frequency")
+                      );
                       item.rows.forEach((row, rowIdx) => {
                         isUpdated = true;
                         if (rowIdx > 0) {
