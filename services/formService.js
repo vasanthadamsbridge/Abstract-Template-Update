@@ -1013,7 +1013,9 @@ class formService {
                         isUpdated = true;
                         if (rowIdx > 0) {
                           item.rows[rowIdx].unshift(incomeCategoryField);
-                          item.rows[rowIdx].slice(0, -1); 
+                          item.rows[rowIdx] = item.rows[rowIdx].filter(col => 
+                            !col.components.some(component => component.label === "Frequency")
+                          );
                         }
                       });
                     }
@@ -1024,7 +1026,9 @@ class formService {
                         isUpdated = true;
                         if (rowIdx > 0) {
                           item.rows[rowIdx].unshift(incomeCategoryField);
-                          item.rows[rowIdx].slice(0, -1); 
+                          item.rows[rowIdx] = item.rows[rowIdx].filter(col => 
+                            !col.components.some(component => component.label === "Frequency")
+                          );
                         }
                       });
                     }
