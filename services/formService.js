@@ -70,7 +70,6 @@ class formService {
         const templates = leaseReportTemplate.filter((template) => template.templateId);
         var count = 0;
         for (let temp of templates) {
-          // if (!temp.templateFieldsId) {
           const documents = await abstractTemplateModel.findById({ _id: new mongoose.Types.ObjectId(temp.templateId) });
           if (documents) {
             let data = JSON.parse(JSON.stringify(documents));
@@ -147,7 +146,6 @@ class formService {
               }
             }
           }
-          // }
         }
       }
     } catch (err) {
@@ -786,52 +784,56 @@ class formService {
     };
 
     const incomeCategoryField = {
-      label: "Income Category",
-      data: {
-        values: [
-          {
-            label: "RNT",
-            value: "rnt",
+      components: [
+        {
+          label: "Income Category",
+          data: {
+            values: [
+              {
+                label: "RNT",
+                value: "rnt",
+              },
+              {
+                label: "ABA",
+                value: "aba",
+              },
+              {
+                label: "XXX",
+                value: "xxx",
+              },
+              {
+                label: "ZZZ",
+                value: "zzz",
+              },
+              {
+                label: "FCM",
+                value: "fcm",
+              },
+              {
+                label: "CMN",
+                value: "cmn",
+              },
+              {
+                label: "PTX",
+                value: "ptx",
+              },
+              {
+                label: "INS",
+                value: "ins",
+              },
+              {
+                label: "HLD",
+                value: "hld",
+              },
+            ],
           },
-          {
-            label: "ABA",
-            value: "aba",
+          key: "incomeCategory",
+          properties: {
+            aliasName: "Income Category Base Rent",
           },
-          {
-            label: "XXX",
-            value: "xxx",
-          },
-          {
-            label: "ZZZ",
-            value: "zzz",
-          },
-          {
-            label: "FCM",
-            value: "fcm",
-          },
-          {
-            label: "CMN",
-            value: "cmn",
-          },
-          {
-            label: "PTX",
-            value: "ptx",
-          },
-          {
-            label: "INS",
-            value: "ins",
-          },
-          {
-            label: "HLD",
-            value: "hld",
-          },
-        ],
-      },
-      key: "incomeCategory",
-      properties: {
-        aliasName: "Income Category Base Rent",
-      },
-      type: "select",
+          type: "select",
+        },
+      ],
     };
     try {
       tempComp.forEach((comp) => {
@@ -898,105 +900,109 @@ class formService {
     };
 
     const incomeCategoryField = {
-      label: "Income Category",
-      hideLabel: true,
-      data: {
-        values: [
-          {
-            label: "9signage",
-            value: "9Signage",
+      components: [
+        {
+          label: "Income Category",
+          hideLabel: true,
+          data: {
+            values: [
+              {
+                label: "9signage",
+                value: "9Signage",
+              },
+              {
+                label: "adm",
+                value: "adm",
+              },
+              {
+                label: "brn",
+                value: "brn",
+              },
+              {
+                label: "caest",
+                value: "caest",
+              },
+              {
+                label: "camwuest",
+                value: "camwuest",
+              },
+              {
+                label: "Ccon",
+                value: "ccon",
+              },
+              {
+                label: "Cfrn",
+                value: "cfrn",
+              },
+              {
+                label: "CON",
+                value: "con",
+              },
+              {
+                label: "defrent",
+                value: "defrent",
+              },
+              {
+                label: "elec",
+                value: "elec",
+              },
+              {
+                label: "frn",
+                value: "frn",
+              },
+              {
+                label: "gas",
+                value: "gas",
+              },
+              {
+                label: "hold",
+                value: "hold",
+              },
+              {
+                label: "ins",
+                value: "ins",
+              },
+              {
+                label: "mis",
+                value: "mis",
+              },
+              {
+                label: "oewotest",
+                value: "oewotest",
+              },
+              {
+                label: "opexest",
+                value: "opexest",
+              },
+              {
+                label: "park",
+                value: "park",
+              },
+              {
+                label: "prn",
+                value: "prn",
+              },
+              {
+                label: "ptx",
+                value: "ptx",
+              },
+              {
+                label: "utl",
+                value: "utl",
+              },
+              {
+                label: "was",
+                value: "was",
+              },
+            ],
           },
-          {
-            label: "adm",
-            value: "adm",
+          key: "frequency1",
+          properties: {
+            aliasName: "Income Category Base Rent",
           },
-          {
-            label: "brn",
-            value: "brn",
-          },
-          {
-            label: "caest",
-            value: "caest",
-          },
-          {
-            label: "camwuest",
-            value: "camwuest",
-          },
-          {
-            label: "Ccon",
-            value: "ccon",
-          },
-          {
-            label: "Cfrn",
-            value: "cfrn",
-          },
-          {
-            label: "CON",
-            value: "con",
-          },
-          {
-            label: "defrent",
-            value: "defrent",
-          },
-          {
-            label: "elec",
-            value: "elec",
-          },
-          {
-            label: "frn",
-            value: "frn",
-          },
-          {
-            label: "gas",
-            value: "gas",
-          },
-          {
-            label: "hold",
-            value: "hold",
-          },
-          {
-            label: "ins",
-            value: "ins",
-          },
-          {
-            label: "mis",
-            value: "mis",
-          },
-          {
-            label: "oewotest",
-            value: "oewotest",
-          },
-          {
-            label: "opexest",
-            value: "opexest",
-          },
-          {
-            label: "park",
-            value: "park",
-          },
-          {
-            label: "prn",
-            value: "prn",
-          },
-          {
-            label: "ptx",
-            value: "ptx",
-          },
-          {
-            label: "utl",
-            value: "utl",
-          },
-          {
-            label: "was",
-            value: "was",
-          },
-        ],
-      },
-      key: "frequency1",
-      properties: {
-        aliasName: "Income Category Base Rent",
-      },
-      type: "select",
+          type: "select",
+        },
+      ],
     };
     try {
       tempComp.forEach((comp) => {
@@ -1014,11 +1020,10 @@ class formService {
                         isUpdated = true;
                         if (rowIdx > 0) {
                           item.rows[rowIdx].unshift(incomeCategoryField);
-                          item.rows[rowIdx].pop()
+                          item.rows[rowIdx].pop();
                         }
                       });
-                    }
-                    if (item.type === "table" && (item.label === "Free Rent/Abatement" || item.label === "Free Rent")) {
+                    } else if (item.type === "table" && (item.label === "Free Rent/Abatement" || item.label === "Free Rent")) {
                       isUpdated = true;
                       item.rows[0].unshift(incomeCategoryHeader);
                       item.rows[0].pop();
@@ -1444,12 +1449,12 @@ class formService {
                         if (item.type === "table" && item.isDeleted !== true) {
                           {
                             item.rows &&
-                            item.rows.forEach((row, rowIndex) => {
+                              item.rows.forEach((row, rowIndex) => {
                                 console.log(row);
                                 row &&
-                                row.forEach((col, colIndex) => {
-                                    console.log(col)
-                                    col && col.components &&
+                                  row.forEach((col, colIndex) => {
+                                    console.log(col);
+                                    col &&
                                       col.components.length &&
                                       col.components.forEach((colItem, index) => {
                                         const firstItem = item.rows[0][colIndex].components[index];
@@ -1467,7 +1472,8 @@ class formService {
                           {
                             item.columns &&
                               item.columns.forEach((col, colIndex) => {
-                                col && col.components &&
+                                col &&
+                                  col.components &&
                                   col.components.length &&
                                   col.components.forEach((colItem, index) => {
                                     const field = this.fieldItems(colItem, tab, panel, item, compIndex, tabIndex, panelIndex, itemIndex, 0, true);
@@ -1483,7 +1489,8 @@ class formService {
                                   {
                                     comp.columns &&
                                       comp.columns.forEach((col, colIndex) => {
-                                        col && col.components &&
+                                        col &&
+                                          col.components &&
                                           col.components.length &&
                                           col.components.forEach((colItem, index) => {
                                             const field = this.fieldItems(colItem, tab, panel, item, compIndex, tabIndex, panelIndex, itemIndex, 0, true);
