@@ -100,7 +100,6 @@ class formService {
               tempResult = this.updateBerkleyIncomeCategory(data.components);
             }
             count = count + 1;
-            console.log(tempResult);
             console.log("count", count);
             if (tempResult.isUpdated) {
               data.components = tempResult.tempComp;
@@ -1450,10 +1449,8 @@ class formService {
                           {
                             item.rows &&
                               item.rows.forEach((row, rowIndex) => {
-                                console.log(row);
                                 row &&
                                   row.forEach((col, colIndex) => {
-                                    console.log(col);
                                     col &&
                                       col.components.length &&
                                       col.components.forEach((colItem, index) => {
