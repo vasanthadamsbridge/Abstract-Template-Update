@@ -98,6 +98,8 @@ class formService {
               tempResult = this.updatePrepIncomeCategory(data.components);
             } else if (reqData.type === "BERKLEYINCOMECATEGORY") {
               tempResult = this.updateBerkleyIncomeCategory(data.components);
+            } else if (reqData.type === "SHOPCOREINCOMECATEGORY") {
+              tempResult = this.updateShopIncomeCategory(data.components);
             }
             count = count + 1;
             console.log("count", count);
@@ -1031,6 +1033,50 @@ class formService {
                         if (rowIdx > 0) {
                           item.rows[rowIdx].unshift(incomeCategoryField);
                           item.rows[rowIdx].pop();
+                        }
+                      });
+                    }
+                  });
+                }
+              });
+            }
+          });
+        }
+      });
+      return { isUpdated, tempComp };
+    } catch (err) {
+      console.log(err);
+      throw err;
+    }
+  }
+  
+  updateShopIncomeCategory(tempComp) {
+    let isUpdated = false;
+    try {
+      tempComp.forEach((comp) => {
+        if (comp.type === "tabs") {
+          comp.components.forEach((tab) => {
+            if (tab.label === "Charge schedules") {
+              tab.components.forEach((panel) => {
+                if (panel.type === "panel" && (panel.label === "Rent Schedule" || panel.title === "Rent Schedule")) {
+                  panel.components.forEach((item) => {
+                    if (item.type === "table" && item.label === "Rent Schedule") {
+                      item.rows.forEach((row, rowIdx) => {
+                        if (rowIdx > 0) {
+                          row.forEach((col, colIdx) => {
+                            col.components.forEach((colItem, compIdx) => {
+                              if (colItem.type === "select" && colItem.label === "Income Category") {
+                                isUpdated = true;
+                                const isTaxAvailable = colItem.data.values.some((value) => value.value === "tax");
+                                if (!isTaxAvailable) {
+                                  colItem.data.values.push({
+                                    label: "Tax",
+                                    value: "tax",
+                                  });
+                                }
+                              }
+                            });
+                          });
                         }
                       });
                     }
