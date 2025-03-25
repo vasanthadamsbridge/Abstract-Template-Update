@@ -1049,7 +1049,7 @@ class formService {
       throw err;
     }
   }
-  
+
   updateShopIncomeCategory(tempComp) {
     let isUpdated = false;
     try {
@@ -1070,7 +1070,7 @@ class formService {
                                 const isTaxAvailable = colItem.data.values.some((value) => value.value === "tax");
                                 if (!isTaxAvailable) {
                                   colItem.data.values.push({
-                                    label: "Tax",
+                                    label: "TAX",
                                     value: "tax",
                                   });
                                 }
