@@ -1073,6 +1073,15 @@ class formService {
                           }
                         }
                       });
+                    } else if (item.type === "select" && item.label === "Store Category") {
+                      isUpdated = true;
+                      const isTempAvailable = colItem.data.values.some((value) => value.value === "temp");
+                      if (!isTempAvailable) {
+                        colItem.data.values.push({
+                          label: "TEMP",
+                          value: "temp",
+                        });
+                      }
                     }
                   });
                 }
@@ -1089,116 +1098,119 @@ class formService {
                             col.components.forEach((colItem, compIdx) => {
                               if (colItem.type === "select" && colItem.label === "Income Category") {
                                 isUpdated = true;
-                                colItem.data.values.push(
-                                  {
-                                    label: "CAA",
-                                    value: "caa",
-                                  },
-                                  {
-                                    label: "UWC",
-                                    value: "uwc",
-                                  },
-                                  {
-                                    label: "MKT",
-                                    value: "mkt",
-                                  },
-                                  {
-                                    label: "PRO",
-                                    value: "pro",
-                                  },
-                                  {
-                                    label: "ABT",
-                                    value: "abt",
-                                  },
-                                  {
-                                    label: "ABN",
-                                    value: "abn",
-                                  },
-                                  {
-                                    label: "IRT",
-                                    value: "irt",
-                                  },
-                                  {
-                                    label: "IOT",
-                                    value: "iot",
-                                  },
-                                  {
-                                    label: "IST",
-                                    value: "ist",
-                                  },
-                                  {
-                                    label: "ITP",
-                                    value: "itp",
-                                  },
-                                  {
-                                    label: "CRT",
-                                    value: "crt",
-                                  },
-                                  {
-                                    label: "CET",
-                                    value: "cet",
-                                  },
-                                  {
-                                    label: "CSR",
-                                    value: "csr",
-                                  },
-                                  {
-                                    label: "COR",
-                                    value: "cor",
-                                  },
-                                  {
-                                    label: "SOL",
-                                    value: "sol",
-                                  },
-                                  {
-                                    label: "ANT",
-                                    value: "ant",
-                                  },
-                                  {
-                                    label: "ADV",
-                                    value: "adv",
-                                  },
-                                  {
-                                    label: "SIG",
-                                    value: "sig",
-                                  },
-                                  {
-                                    label: "ATM",
-                                    value: "atm",
-                                  },
-                                  {
-                                    label: "ANC",
-                                    value: "anc",
-                                  },
-                                  {
-                                    label: "PAR",
-                                    value: "par",
-                                  },
-                                  {
-                                    label: "PRK",
-                                    value: "prk",
-                                  },
-                                  {
-                                    label: "BIN",
-                                    value: "bin",
-                                  },
-                                  {
-                                    label: "VND",
-                                    value: "vnd",
-                                  },
-                                  {
-                                    label: "HDT",
-                                    value: "hdt",
-                                  },
-                                  {
-                                    label: "SPO",
-                                    value: "spo",
-                                  },
-                                  {
-                                    label: "STO",
-                                    value: "sto",
-                                  }
-                                );
+                                const isTempAvailable = colItem.data.values.some((value) => value.value === "caa");
+                                if (!isTempAvailable) {
+                                  colItem.data.values.push(
+                                    {
+                                      label: "CAA",
+                                      value: "caa",
+                                    },
+                                    {
+                                      label: "UWC",
+                                      value: "uwc",
+                                    },
+                                    {
+                                      label: "MKT",
+                                      value: "mkt",
+                                    },
+                                    {
+                                      label: "PRO",
+                                      value: "pro",
+                                    },
+                                    {
+                                      label: "ABT",
+                                      value: "abt",
+                                    },
+                                    {
+                                      label: "ABN",
+                                      value: "abn",
+                                    },
+                                    {
+                                      label: "IRT",
+                                      value: "irt",
+                                    },
+                                    {
+                                      label: "IOT",
+                                      value: "iot",
+                                    },
+                                    {
+                                      label: "IST",
+                                      value: "ist",
+                                    },
+                                    {
+                                      label: "ITP",
+                                      value: "itp",
+                                    },
+                                    {
+                                      label: "CRT",
+                                      value: "crt",
+                                    },
+                                    {
+                                      label: "CET",
+                                      value: "cet",
+                                    },
+                                    {
+                                      label: "CSR",
+                                      value: "csr",
+                                    },
+                                    {
+                                      label: "COR",
+                                      value: "cor",
+                                    },
+                                    {
+                                      label: "SOL",
+                                      value: "sol",
+                                    },
+                                    {
+                                      label: "ANT",
+                                      value: "ant",
+                                    },
+                                    {
+                                      label: "ADV",
+                                      value: "adv",
+                                    },
+                                    {
+                                      label: "SIG",
+                                      value: "sig",
+                                    },
+                                    {
+                                      label: "ATM",
+                                      value: "atm",
+                                    },
+                                    {
+                                      label: "ANC",
+                                      value: "anc",
+                                    },
+                                    {
+                                      label: "PAR",
+                                      value: "par",
+                                    },
+                                    {
+                                      label: "PRK",
+                                      value: "prk",
+                                    },
+                                    {
+                                      label: "BIN",
+                                      value: "bin",
+                                    },
+                                    {
+                                      label: "VND",
+                                      value: "vnd",
+                                    },
+                                    {
+                                      label: "HDT",
+                                      value: "hdt",
+                                    },
+                                    {
+                                      label: "SPO",
+                                      value: "spo",
+                                    },
+                                    {
+                                      label: "STO",
+                                      value: "sto",
+                                    }
+                                  );
+                                }
                               }
                             });
                           });
