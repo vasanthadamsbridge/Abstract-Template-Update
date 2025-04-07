@@ -1056,6 +1056,28 @@ class formService {
       tempComp.forEach((comp) => {
         if (comp.type === "tabs") {
           comp.components.forEach((tab) => {
+            if (tab.label === "General Information") {
+              tab.components.forEach((panel) => {
+                if (panel.type === "panel" && (panel.label === "Tenant Information" || panel.title === "Tenant Information")) {
+                  panel.components.forEach((item) => {
+                    if (item.type === "container" && item.label === "Tenant Information") {
+                      item.components.forEach((colItem, compIdx) => {
+                        if (colItem.type === "select" && colItem.label === "Store Category") {
+                          isUpdated = true;
+                          const isTempAvailable = colItem.data.values.some((value) => value.value === "temp");
+                          if (!isTempAvailable) {
+                            colItem.data.values.push({
+                              label: "TEMP",
+                              value: "temp",
+                            });
+                          }
+                        }
+                      });
+                    }
+                  });
+                }
+              });
+            }
             if (tab.label === "Charge schedules") {
               tab.components.forEach((panel) => {
                 if (panel.type === "panel" && (panel.label === "Rent Schedule" || panel.title === "Rent Schedule")) {
@@ -1067,13 +1089,116 @@ class formService {
                             col.components.forEach((colItem, compIdx) => {
                               if (colItem.type === "select" && colItem.label === "Income Category") {
                                 isUpdated = true;
-                                const isTaxAvailable = colItem.data.values.some((value) => value.value === "tax");
-                                if (!isTaxAvailable) {
-                                  colItem.data.values.push({
-                                    label: "TAX",
-                                    value: "tax",
-                                  });
-                                }
+                                colItem.data.values.push(
+                                  {
+                                    label: "CAA",
+                                    value: "caa",
+                                  },
+                                  {
+                                    label: "UWC",
+                                    value: "uwc",
+                                  },
+                                  {
+                                    label: "MKT",
+                                    value: "mkt",
+                                  },
+                                  {
+                                    label: "PRO",
+                                    value: "pro",
+                                  },
+                                  {
+                                    label: "ABT",
+                                    value: "abt",
+                                  },
+                                  {
+                                    label: "ABN",
+                                    value: "abn",
+                                  },
+                                  {
+                                    label: "IRT",
+                                    value: "irt",
+                                  },
+                                  {
+                                    label: "IOT",
+                                    value: "iot",
+                                  },
+                                  {
+                                    label: "IST",
+                                    value: "ist",
+                                  },
+                                  {
+                                    label: "ITP",
+                                    value: "itp",
+                                  },
+                                  {
+                                    label: "CRT",
+                                    value: "crt",
+                                  },
+                                  {
+                                    label: "CET",
+                                    value: "cet",
+                                  },
+                                  {
+                                    label: "CSR",
+                                    value: "csr",
+                                  },
+                                  {
+                                    label: "COR",
+                                    value: "cor",
+                                  },
+                                  {
+                                    label: "SOL",
+                                    value: "sol",
+                                  },
+                                  {
+                                    label: "ANT",
+                                    value: "ant",
+                                  },
+                                  {
+                                    label: "ADV",
+                                    value: "adv",
+                                  },
+                                  {
+                                    label: "SIG",
+                                    value: "sig",
+                                  },
+                                  {
+                                    label: "ATM",
+                                    value: "atm",
+                                  },
+                                  {
+                                    label: "ANC",
+                                    value: "anc",
+                                  },
+                                  {
+                                    label: "PAR",
+                                    value: "par",
+                                  },
+                                  {
+                                    label: "PRK",
+                                    value: "prk",
+                                  },
+                                  {
+                                    label: "BIN",
+                                    value: "bin",
+                                  },
+                                  {
+                                    label: "VND",
+                                    value: "vnd",
+                                  },
+                                  {
+                                    label: "HDT",
+                                    value: "hdt",
+                                  },
+                                  {
+                                    label: "SPO",
+                                    value: "spo",
+                                  },
+                                  {
+                                    label: "STO",
+                                    value: "sto",
+                                  }
+                                );
                               }
                             });
                           });
