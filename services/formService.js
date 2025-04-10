@@ -1098,12 +1098,56 @@ class formService {
                             col.components.forEach((colItem, compIdx) => {
                               if (colItem.type === "select" && colItem.label === "Income Category") {
                                 isUpdated = true;
-                                const isTempAvailable = colItem.data.values.some((value) => value.value === "hva");
+                                const isTempAvailable = colItem.data.values.some((value) => value.value === "off");
                                 if (!isTempAvailable) {
                                   colItem.data.values.push(
                                     {
-                                      "label": "HVA",
-                                      "value": "hva"
+                                      label: "OFF",
+                                      value: "off",
+                                    },
+                                    {
+                                      label: "DRN",
+                                      value: "drn",
+                                    },
+                                    {
+                                      label: "INA",
+                                      value: "ina",
+                                    },
+                                    {
+                                      label: "MGA",
+                                      value: "mga",
+                                    },
+                                    {
+                                      label: "ADM",
+                                      value: "adm",
+                                    },
+                                    {
+                                      label: "APT",
+                                      value: "apt",
+                                    },
+                                    {
+                                      label: "H2O",
+                                      value: "h2O",
+                                    },
+                                    {
+                                      label: "MSC",
+                                      value: "msc",
+                                    },
+                                    {
+                                      label: "PPP",
+                                      value: "ppp",
+                                    },
+                                    {
+                                      label: "TR1",
+                                      value: "tr1",
+                                    },
+                                    {
+                                      label: "WAT",
+                                      value: "wat",
+                                    },
+                                    {
+                                      label: "TRI",
+                                      value: "tri",
                                     }
                                   );
                                 }
