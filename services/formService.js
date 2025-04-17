@@ -1052,6 +1052,17 @@ class formService {
 
   updateShopIncomeCategory(tempComp) {
     let isUpdated = false;
+    const tiAllowanceComponent = {
+      "label": "TI Allowance Amount",
+      "applyMaskOn": "change",
+      "tableView": true,
+      "key": "textField",
+      "properties": {
+        "aliasName": "TI Allowance Amount"
+      },
+      "type": "textfield",
+      "input": true
+    };
     try {
       tempComp.forEach((comp) => {
         if (comp.type === "tabs") {
@@ -1087,6 +1098,25 @@ class formService {
             //     }
             //   });
             // }
+            if (tab.label === "General Information") {
+              tab.components.forEach((panel) => {
+                if (panel.type === "panel" && (panel.label === "Tenant Information" || panel.title === "Tenant Information")) {
+                  panel.components.forEach((item) => {
+                    if (item.type === "container" && item.label === "Tenant Information") {
+                      const isTempAvailable = item.components.some((value) => value.label === "TI Allowance Amount");
+                      if(!isTempAvailable) {
+                        const guarantorIndex = item.components.findIndex(
+                          component => component.label === "Guarantor"  // Guarantor's key
+                        );
+                        
+                        // Insert the new component before Guarantor
+                        item.components.splice(guarantorIndex, 0, tiAllowanceComponent);
+                      }
+                    } 
+                  });
+                }
+              });
+            }
             if (tab.label === "Charge schedules") {
               tab.components.forEach((panel) => {
                 if (panel.type === "panel" && (panel.label === "Rent Schedule" || panel.title === "Rent Schedule")) {
@@ -1098,56 +1128,12 @@ class formService {
                             col.components.forEach((colItem, compIdx) => {
                               if (colItem.type === "select" && colItem.label === "Income Category") {
                                 isUpdated = true;
-                                const isTempAvailable = colItem.data.values.some((value) => value.value === "off");
+                                const isTempAvailable = colItem.data.values.some((value) => value.value === "cpi");
                                 if (!isTempAvailable) {
                                   colItem.data.values.push(
                                     {
-                                      label: "OFF",
-                                      value: "off",
-                                    },
-                                    {
-                                      label: "DRN",
-                                      value: "drn",
-                                    },
-                                    {
-                                      label: "INA",
-                                      value: "ina",
-                                    },
-                                    {
-                                      label: "MGA",
-                                      value: "mga",
-                                    },
-                                    {
-                                      label: "ADM",
-                                      value: "adm",
-                                    },
-                                    {
-                                      label: "APT",
-                                      value: "apt",
-                                    },
-                                    {
-                                      label: "H2O",
-                                      value: "h2O",
-                                    },
-                                    {
-                                      label: "MSC",
-                                      value: "msc",
-                                    },
-                                    {
-                                      label: "PPP",
-                                      value: "ppp",
-                                    },
-                                    {
-                                      label: "TR1",
-                                      value: "tr1",
-                                    },
-                                    {
-                                      label: "WAT",
-                                      value: "wat",
-                                    },
-                                    {
-                                      label: "TRI",
-                                      value: "tri",
+                                      "label": "CPI",
+                                      "value": "cpi"
                                     }
                                   );
                                 }
