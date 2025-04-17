@@ -1053,15 +1053,15 @@ class formService {
   updateShopIncomeCategory(tempComp) {
     let isUpdated = false;
     const tiAllowanceComponent = {
-      "label": "TI Allowance Amount",
-      "applyMaskOn": "change",
-      "tableView": true,
-      "key": "textField",
-      "properties": {
-        "aliasName": "TI Allowance Amount"
+      label: "TI Allowance Amount",
+      applyMaskOn: "change",
+      tableView: true,
+      key: "textField",
+      properties: {
+        aliasName: "TI Allowance Amount",
       },
-      "type": "textfield",
-      "input": true
+      type: "textfield",
+      input: true,
     };
     try {
       tempComp.forEach((comp) => {
@@ -1101,19 +1101,37 @@ class formService {
             if (tab.label === "General Information") {
               tab.components.forEach((panel) => {
                 if (panel.type === "panel" && (panel.label === "Tenant Information" || panel.title === "Tenant Information")) {
-                  panel.components.forEach((item) => {
-                    if (item.type === "container" && item.label === "Tenant Information") {
-                      const isTempAvailable = item.components.some((value) => value.label === "TI Allowance Amount");
-                      if(!isTempAvailable) {
-                        const guarantorIndex = item.components.findIndex(
-                          component => component.label === "Guarantor"  // Guarantor's key
-                        );
-                        
-                        // Insert the new component before Guarantor
-                        item.components.splice(guarantorIndex, 0, tiAllowanceComponent);
+                  if (panel.components.some((value) => value.type === "container" && value.label === "Tenant Information")) {
+                    panel.components.forEach((item) => {
+                      if (item.type === "container" && item.label === "Tenant Information") {
+                        isUpdated = true;
+                        const isTempAvailable = item.components.some((value) => value.label === "TI Allowance Amount");
+                        if (!isTempAvailable) {
+                          const guarantorIndex = item.components.findIndex(
+                            (component) => component.label === "Guarantor" // Guarantor's key
+                          );
+
+                          // Insert the new component before Guarantor
+                          if (guarantorIndex >= 0) {
+                            item.components.splice(guarantorIndex, 0, tiAllowanceComponent);
+                          }
+                        }
                       }
-                    } 
-                  });
+                    });
+                  } else {
+                    isUpdated = true;
+                    const isTempAvailable = panel.components.some((value) => value.label === "TI Allowance Amount");
+                    if (!isTempAvailable) {
+                      const guarantorIndex = panel.components.findIndex(
+                        (component) => component.label === "Guarantor" // Guarantor's key
+                      );
+
+                      // Insert the new component before Guarantor
+                      if (guarantorIndex >= 0) {
+                        panel.components.splice(guarantorIndex, 0, tiAllowanceComponent);
+                      }
+                    }
+                  }
                 }
               });
             }
@@ -1130,12 +1148,10 @@ class formService {
                                 isUpdated = true;
                                 const isTempAvailable = colItem.data.values.some((value) => value.value === "cpi");
                                 if (!isTempAvailable) {
-                                  colItem.data.values.push(
-                                    {
-                                      "label": "CPI",
-                                      "value": "cpi"
-                                    }
-                                  );
+                                  colItem.data.values.push({
+                                    label: "CPI",
+                                    value: "cpi",
+                                  });
                                 }
                               }
                             });
