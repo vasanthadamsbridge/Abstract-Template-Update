@@ -395,7 +395,7 @@ class formService {
       tempComp.forEach((comp) => {
         if (comp.type === "tabs") {
           comp.components.forEach((tab) => {
-            if (tab.label === "Lease Clause") {
+            if (tab.label === "Lease Clauses") {
               console.log("Lease Clause Tab Found");
               function insertPanelAfter(panelLabel, newPanels) {
                 const idx = tab.components.findIndex(
