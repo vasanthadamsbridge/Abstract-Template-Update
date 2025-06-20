@@ -396,6 +396,7 @@ class formService {
         if (comp.type === "tabs") {
           comp.components.forEach((tab) => {
             if (tab.label === "Lease Clause") {
+              console.log("Lease Clause Tab Found");
               function insertPanelAfter(panelLabel, newPanels) {
                 const idx = tab.components.findIndex(
                   (panel) =>
@@ -403,17 +404,18 @@ class formService {
                     (panel.label === panelLabel || panel.title === panelLabel)
                 );
                 if (idx !== -1) {
+                  console.log(idx)
                   // Remove duplicates if present
-                  newPanels.forEach((newPanel) => {
-                    const exists = tab.components.some(
-                      (panel) => panel.type === "panel" && panel.label === newPanel.label
-                    );
-                    if (exists) {
-                      tab.components = tab.components.filter(
-                        (panel) => !(panel.type === "panel" && panel.label === newPanel.label)
-                      );
-                    }
-                  });
+                  // newPanels.forEach((newPanel) => {
+                  //   const exists = tab.components.some(
+                  //     (panel) => panel.type === "panel" && panel.label === newPanel.label
+                  //   );
+                  //   if (exists) {
+                  //     tab.components = tab.components.filter(
+                  //       (panel) => !(panel.type === "panel" && panel.label === newPanel.label)
+                  //     );
+                  //   }
+                  // });
                   // Insert in order
                   tab.components.splice(idx + 1, 0, ...newPanels);
                   isUpdated = true;
