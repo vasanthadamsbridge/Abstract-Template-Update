@@ -297,6 +297,7 @@ class formService {
           label: "Assignment Effective",
           key: "assignmentEffective1",
           type: "container",
+          hideLabel: true,
           components: [
             {
               label: "Effective Date",
