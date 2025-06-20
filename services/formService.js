@@ -100,6 +100,8 @@ class formService {
               tempResult = this.updateBerkleyIncomeCategory(data.components);
             } else if (reqData.type === "SHOPCOREINCOMECATEGORY") {
               tempResult = this.updateShopIncomeCategory(data.components);
+            } else if (reqData.type === "SHOPCORELEASECLAUSEPANELS") {
+              tempResult = this.updateShopCoreLeaseClausePanels(data.components);
             }
             count = count + 1;
             console.log("count", count);
@@ -261,6 +263,175 @@ class formService {
         }
       }
     } catch (err) {
+      throw err;
+    }
+  }
+
+  updateShopCoreLeaseClausePanels(tempComp) {
+    // Administrative Fee
+    const amendmentsLeaseModifications = {
+      label: "Amendments/Lease Modifications",
+      title: "Amendments/Lease Modifications",
+      key: "amendmentsLeaseModifications",
+      type: "panel",
+      components: [
+        {
+          label: "Comments",
+          key: "comments1",
+          properties: {
+            aliasName: "Amendments/Lease Modifications",
+          },
+          type: "textarea",
+        },
+      ],
+    };
+
+    // Assignment and Subletting
+    const assignmentEffective = {
+      label: "Assignment Effective",
+      title: "Assignment Effective",
+      key: "assignmentEffective",
+      type: "panel",
+      components: [
+        {
+          label: "Assignment Effective",
+          key: "assignmentEffective1",
+          type: "container",
+          components: [
+            {
+              label: "Effective Date",
+              format: "MM/dd/yyyy",
+              key: "effectiveDate",
+              properties: {
+                aliasName: "Effective Date",
+              },
+              type: "datetime",
+            },
+            {
+              label: "Comments",
+              key: "comments5",
+              properties: {
+                aliasName: "Assignment Effective",
+              },
+              type: "textarea",
+            },
+          ],
+        },
+      ],
+    };
+
+    // Repair and Maintenance
+    const roofRights = {
+      label: "Roof Rights",
+      title: "Roof Rights",
+      key: "roofRights",
+      type: "panel",
+      components: [
+        {
+          label: "Comments",
+          key: "comments2",
+          properties: {
+            aliasName: "Roof Rights",
+          },
+          type: "textarea",
+        },
+      ],
+    };
+
+    // SNDA
+    const storeOpening = {
+      label: "Store Opening",
+      title: "Store Opening",
+      key: "storeOpening",
+      type: "panel",
+      components: [
+        {
+          label: "Comments",
+          key: "comments6",
+          properties: {
+            aliasName: "Store Opening",
+          },
+          type: "textarea",
+        },
+      ],
+    };
+
+    // Tenant Insurance requirements
+    const tenantVacate = {
+      label: "Tenant Vacate",
+      title: "Tenant Vacate",
+      key: "tenantVacate",
+      type: "panel",
+      components: [
+        {
+          label: "Comments",
+          key: "comments9",
+          properties: {
+            aliasName: "Tenant Vacate",
+          },
+          type: "textarea",
+        },
+      ],
+    };
+    const termNote = {
+      label: "Term Notes",
+      title: "Term Notes",
+      key: "termNotes",
+      type: "panel",
+      components: [
+        {
+          label: "Comments",
+          key: "comments8",
+          properties: {
+            aliasName: "Term Notes",
+          },
+          type: "textarea",
+        },
+      ],
+    };
+
+    let isUpdated = false;
+    try {
+      tempComp.forEach((comp) => {
+        if (comp.type === "tabs") {
+          comp.components.forEach((tab) => {
+            if (tab.label === "Lease Clause") {
+              function insertPanelAfter(panelLabel, newPanels) {
+                const idx = tab.components.findIndex(
+                  (panel) =>
+                    panel.type === "panel" &&
+                    (panel.label === panelLabel || panel.title === panelLabel)
+                );
+                if (idx !== -1) {
+                  // Remove duplicates if present
+                  newPanels.forEach((newPanel) => {
+                    const exists = tab.components.some(
+                      (panel) => panel.type === "panel" && panel.label === newPanel.label
+                    );
+                    if (exists) {
+                      tab.components = tab.components.filter(
+                        (panel) => !(panel.type === "panel" && panel.label === newPanel.label)
+                      );
+                    }
+                  });
+                  // Insert in order
+                  tab.components.splice(idx + 1, 0, ...newPanels);
+                  isUpdated = true;
+                }
+              }
+
+              insertPanelAfter("Administrative Fee", [amendmentsLeaseModifications]);
+              insertPanelAfter("Assignment and Subletting", [assignmentEffective]);
+              insertPanelAfter("Repair and Maintenance", [roofRights]);
+              insertPanelAfter("SNDA", [storeOpening]);
+              insertPanelAfter("Tenant Insurance requirements", [tenantVacate, termNote]);
+            }
+          });
+        }
+      });
+      return { isUpdated, tempComp };
+    } catch (err) {
+      console.log(err);
       throw err;
     }
   }
