@@ -102,6 +102,10 @@ class formService {
               tempResult = this.updateShopIncomeCategory(data.components);
             } else if (reqData.type === "SHOPCORELEASECLAUSEPANELS") {
               tempResult = this.updateShopCoreLeaseClausePanels(data.components);
+            } else if (reqData.type === "STEINERCLAUSESCONTAINER") {
+              tempResult = this.updateSteinerClauseContainer(data.components);
+            } else if (reqData.type === "STEINERCLAUSESFIELDADDITION") {
+              tempResult = this.updateSteinerClauseFieldAddition(data.components);
             }
             count = count + 1;
             console.log("count", count);
@@ -153,6 +157,49 @@ class formService {
       }
     } catch (err) {
       throw err;
+    }
+  }
+
+  async singleTemplateUpdate(reqData) {
+    let data = JSON.parse(JSON.stringify(reqData.templateData));
+    let tempResult = { isUpdated: false, tempComp: data.components };
+    if (reqData.type === "BGOBASERENTTABLE") {
+      tempResult = this.updateBGOBaseRentTable(data.components);
+    } else if (reqData.type === "SRPOPTIONSBASETABLE") {
+      tempResult = this.updateSRPOptionsRentTable(data.components);
+    } else if (reqData.type === "SRPEXPRECINSEXP") {
+      tempResult = this.updateSRPExpRecInsExp(data.components);
+    } else if (reqData.type === "BGOTABCONVENANTS") {
+      tempResult = this.updateBGOTabConvenants(data.components);
+    } else if (reqData.type === "TANGERTEMPLATE") {
+      tempResult = this.updateTangertemplate(data.components);
+    } else if (reqData.type === "TANGERTEMPLATE2") {
+      tempResult = this.updateTangertemplate2(data.components);
+    } else if (reqData.type === "TANGERTEMPLATE2") {
+      tempResult = this.updateTangerOutlets(data.components);
+    } else if (reqData.type === "BGOREMOVEFIELDSNONLEASEDATA") {
+      tempResult = this.updateBGORemoveNonLeaseData(data.components);
+    } else if (reqData.type === "TANGEROUTLETSADDINCOMECATEGORY") {
+      tempResult = this.updateTangerOutletsIncomeCategory(data.components);
+    } else if (reqData.type === "BGOBASERENTTABLEANDBGOTABCONVENANTS") {
+      tempResult = this.updateBGOBaseRentTableAndConvenantsTab(data.components);
+    } else if (reqData.type === "PREPINCOMECATEGORY") {
+      tempResult = this.updatePrepIncomeCategory(data.components);
+    } else if (reqData.type === "BERKLEYINCOMECATEGORY") {
+      tempResult = this.updateBerkleyIncomeCategory(data.components);
+    } else if (reqData.type === "SHOPCOREINCOMECATEGORY") {
+      tempResult = this.updateShopIncomeCategory(data.components);
+    } else if (reqData.type === "SHOPCORELEASECLAUSEPANELS") {
+      tempResult = this.updateShopCoreLeaseClausePanels(data.components);
+    } else if (reqData.type === "STEINERCLAUSESCONTAINER") {
+      tempResult = this.updateSteinerClauseContainer(data.components);
+    } else if (reqData.type === "STEINERCLAUSESFIELDADDITION") {
+      tempResult = this.updateSteinerClauseFieldAddition(data.components);
+    }
+    if (tempResult.isUpdated) {
+      return { ...data, components: tempResult.tempComp };
+    } else {
+      return null;
     }
   }
 
@@ -263,6 +310,459 @@ class formService {
         }
       }
     } catch (err) {
+      throw err;
+    }
+  }
+
+  updateSteinerClauseContainer(tempComp) {
+    let isUpdated = false;
+    try {
+      tempComp.forEach((comp) => {
+        if (comp.type === "tabs") {
+          comp.components.forEach((tab) => {
+            if (tab.label === "Lease Options" || tab.label === "Lease Clauses") {
+              tab.components.forEach((panel) => {
+                if (panel.type === "panel") {
+                  const hasExistingContainer = panel.components.some((item) => item.type === "container");
+
+                  if (hasExistingContainer) {
+                    return; // skip this panel
+                  }
+                  panel.components.forEach((item) => {
+                    if (item.label) {
+                      item.label = item.label?.toUpperCase() || item.label || "";
+                    }
+                  });
+
+                  const baseContainer = {
+                    label: panel.title || panel.label,
+                    tableView: false,
+                    validateWhenHidden: false,
+                    key: panel.key,
+                    type: "container",
+                    input: true,
+                    hideLabel: true,
+                    components: panel.components,
+                  };
+
+                  panel.components = []; // Clear the components of the panel
+
+                  // Add all components from the panel to baseContainer
+                  panel.components.push(baseContainer);
+                  isUpdated = true;
+                }
+              });
+            }
+          });
+        }
+      });
+      return { isUpdated, tempComp: tempComp };
+    } catch (err) {
+      console.log(err);
+      throw err;
+    }
+  }
+
+  // updateSteinerClauseFieldAddition(tempComp) {
+  //   let isUpdated = false;
+  //   const restrictionsUsePanel = {
+  //     label: "RESTRICTION OF TENANT USE",
+  //     title: "RESTRICTION OF TENANT USE",
+  //     key: "restrictionOfTenantUse",
+  //     type: "panel",
+  //     components: [
+  //       {
+  //         label: "RESTRICTION OF PROHIBITED USE",
+  //         hideLabel: true,
+  //         key: "restrictionOfProhibitedUse",
+  //         type: "container",
+  //         components: [
+  //           {
+  //             label: "PROHIBITED USE",
+  //             key: "prohibitedUse",
+  //             properties: {
+  //               aliasName: "Prohibited Use",
+  //             },
+  //             type: "textarea",
+  //           },
+  //         ],
+  //       },
+  //     ],
+  //   };
+  //   const reviewedBy = {
+  //     label: "REVIEWED BY",
+  //     title: "REVIEWED BY",
+  //     key: "reviewedBy",
+  //     type: "panel",
+  //     components: [
+  //       {
+  //         label: "REVIEWED BY",
+  //         key: "reviewedBy1",
+  //         type: "container",
+  //         hideLabel: true,
+  //         components: [
+  //           {
+  //             label: "NAME",
+  //             key: "name",
+  //             type: "textfield",
+  //           },
+  //           {
+  //             label: "DATE",
+  //             format: "MM/dd/YYYY",
+  //             placeholder: "MM/dd/YYYY",
+  //             enableTime: false,
+  //             key: "date",
+  //             type: "datetime",
+  //           },
+  //         ],
+  //       },
+  //     ],
+  //   };
+  //   try {
+  //     tempComp.forEach((comp) => {
+  //       if (comp.type === "tabs") {
+  //         comp.components.forEach((tab) => {
+  //           if (tab.label === "Lease Clauses") {
+  //             tab.components.push(restrictionsUsePanel);
+  //             tab.components.push(reviewedBy);
+  //             isUpdated = true;
+
+  //             tab.components.forEach((panel) => {
+  //               if (panel.type === "panel") {
+  //                 if (panel.label === "Use Clause" || panel.title === "Use Clause") {
+  //                   const hasExistingContainer = panel.components.some((item) => item.type === "container");
+
+  //                   if (hasExistingContainer) {
+  //                     return; // skip this panel
+  //                   }
+  //                   // Remove Prohibited Use Label if it exists
+  //                   panel.components = panel.components.filter((item) => item.label !== "Prohibited Use");
+
+  //                   isUpdated = true;
+  //                 }
+  //                 if (panel.label === "Percentage Rent" || panel.title === "Percentage Rent") {
+  //                   const hasExistingContainer = panel.components.some((item) => item.type === "container");
+
+  //                   if (hasExistingContainer) {
+  //                     return; // skip this panel
+  //                   }
+  //                   const requiredField = {
+  //                     label: "REQUIRED",
+  //                     data: {
+  //                       values: [
+  //                         {
+  //                           label: "Yes",
+  //                           value: "Yes",
+  //                         },
+  //                         {
+  //                           label: "No",
+  //                           value: "No",
+  //                         },
+  //                       ],
+  //                     },
+  //                     key: "required",
+  //                     properties: {
+  //                       aliasName: "Percentage Rent Required",
+  //                     },
+  //                     type: "select",
+  //                   };
+
+  //                   const breakPointField = {
+  //                     label: "BREAKPOINT",
+  //                     key: "breakpoint",
+  //                     type: "textfield",
+  //                   };
+
+  //                   const percentageField = {
+  //                     label: "PERCENTAGE RENT THRESHOLD",
+  //                     key: "percentageRentThreshold",
+  //                     type: "textfield",
+  //                   };
+
+  //                   panel.components.unshift(requiredField);
+
+  //                   // Find index of Natural field
+  //                   const naturalIndex = panel.components.findIndex((item) => item.label === "Natural");
+
+  //                   // Insert after Natural field if found, otherwise at end
+  //                   const insertIndex = naturalIndex >= 0 ? naturalIndex + 1 : panel.components.length;
+  //                   panel.components.splice(insertIndex, 0, percentageField, breakPointField);
+
+  //                   isUpdated = true;
+  //                 }
+  //                 if (panel.label === "Exclusive Use" || panel.title === "Exclusive Use") {
+  //                   const hasExistingContainer = panel.components.some((item) => item.type === "container");
+
+  //                   if (hasExistingContainer) {
+  //                     return; // skip this panel
+  //                   }
+  //                   const exclusiveUseFields = [
+  //                     {
+  //                       label: "EXCLUSIVE USE DEFINITION",
+  //                       key: "exclusiveUseDefinition",
+  //                       type: "textarea",
+  //                     },
+  //                     {
+  //                       label: "EXCEPTION",
+  //                       key: "exception",
+  //                       type: "textarea",
+  //                     },
+  //                     {
+  //                       label: "REMEDY",
+  //                       key: "remedy",
+  //                       type: "textarea",
+  //                     },
+  //                     {
+  //                       label: "TERMINATION RIGHTS",
+  //                       key: "terminationRights",
+  //                       type: "textarea",
+  //                     },
+  //                   ];
+  //                   // Find index of Required field
+  //                   const requiredIndex = panel.components.findIndex((item) => item.label === "Required");
+
+  //                   // Insert after Required field if found, otherwise at beginning
+  //                   const insertIndex = requiredIndex >= 0 ? requiredIndex + 1 : 0;
+  //                   panel.components.splice(insertIndex, 0, ...exclusiveUseFields);
+
+  //                   isUpdated = true;
+  //                 }
+  //                 if (panel.title === "Maintenance & Repairs" || panel.label === "Maintenance & Repairs") {
+  //                   const hasExistingContainer = panel.components.some((item) => item.type === "container");
+
+  //                   if (hasExistingContainer) {
+  //                     return; // skip this panel
+  //                   }
+  //                   panel.components.forEach((item) => {
+  //                     if (item.label) {
+  //                       item.label = item.label?.toUpperCase() || item.label || "";
+  //                     }
+  //                   });
+
+  //                   const maintenanceFields = [
+  //                     {
+  //                       label: "PREMISES ACCESS",
+  //                       key: "premisesAccess",
+  //                       type: "textarea",
+  //                     },
+  //                     {
+  //                       label: "ADMIN FEE ON SVCS",
+  //                       key: "adminFeeOnSvcs",
+  //                       type: "textarea",
+  //                     },
+  //                   ];
+
+  //                   const tenantRepairIndex = panel.components.findIndex((item) => item.label === "Tenant Repair");
+
+  //                   // Insert after Required field if found, otherwise at beginning
+  //                   const insertIndex = tenantRepairIndex >= 0 ? tenantRepairIndex + 1 : 0;
+  //                   panel.components.splice(insertIndex, 0, ...maintenanceFields);
+
+  //                   isUpdated = true;
+  //                 }
+  //               }
+  //             });
+  //           }
+  //         });
+  //       }
+  //     });
+  //     return { isUpdated, tempComp: tempComp };
+  //   } catch (err) {
+  //     console.log(err);
+  //     throw err;
+  //   }
+  // }
+
+  updateSteinerClauseFieldAddition(tempComp) {
+    let isUpdated = false;
+    const restrictionsUsePanel = {
+      label: "RESTRICTION OF TENANT USE",
+      title: "RESTRICTION OF TENANT USE",
+      key: "restrictionOfTenantUse",
+      type: "panel",
+      components: [
+        {
+          label: "RESTRICTION OF PROHIBITED USE",
+          hideLabel: true,
+          key: "restrictionOfProhibitedUse",
+          type: "container",
+          components: [
+            {
+              label: "PROHIBITED USE",
+              key: "prohibitedUse",
+              properties: {
+                aliasName: "Prohibited Use",
+              },
+              type: "textarea",
+            },
+          ],
+        },
+      ],
+    };
+    const reviewedBy = {
+      label: "REVIEWED BY",
+      title: "REVIEWED BY",
+      key: "reviewedBy",
+      type: "panel",
+      components: [
+        {
+          label: "REVIEWED BY",
+          key: "reviewedBy1",
+          type: "container",
+          hideLabel: true,
+          components: [
+            {
+              label: "NAME",
+              key: "name",
+              type: "textfield",
+            },
+            {
+              label: "DATE",
+              format: "MM/dd/YYYY",
+              placeholder: "MM/dd/YYYY",
+              enableTime: false,
+              key: "date",
+              type: "datetime",
+            },
+          ],
+        },
+      ],
+    };
+
+    // Helper function for case-insensitive comparison
+    const matchesPanel = (panel, targetLabel) => {
+      return (
+        (panel.label && panel.label.toUpperCase() === targetLabel.toUpperCase()) || (panel.title && panel.title.toUpperCase() === targetLabel.toUpperCase())
+      );
+    };
+
+    // Helper function for case-insensitive field finding
+    const findFieldIndex = (components, targetLabel) => {
+      return components.findIndex((item) => item.label && item.label.toUpperCase() === targetLabel.toUpperCase());
+    };
+
+    try {
+      tempComp.forEach((comp) => {
+        if (comp.type === "tabs") {
+          comp.components.forEach((tab) => {
+            if (tab.label === "Lease Clauses") {
+              // Add the new panels to the Lease Clauses tab
+              tab.components.push(restrictionsUsePanel);
+              tab.components.push(reviewedBy);
+              isUpdated = true;
+
+              tab.components.forEach((panel) => {
+                if (panel.type === "panel") {
+                  // Convert panel label and title to uppercase for consistency
+                  if (panel.label) panel.label = panel.label.toUpperCase();
+                  if (panel.title) panel.title = panel.title.toUpperCase();
+
+                  if (matchesPanel(panel, "Use Clause")) {
+                    const hasExistingContainer = panel.components.some((item) => item.type === "container");
+                    if (hasExistingContainer) return;
+                    panel.components = panel.components.filter((item) => item.label && item.label.toUpperCase() !== "PROHIBITED USE");
+                    isUpdated = true;
+                  } else if (matchesPanel(panel, "Percentage Rent")) {
+                    const hasExistingContainer = panel.components.some((item) => item.type === "container");
+                    if (hasExistingContainer) return;
+
+                    const requiredField = {
+                      label: "REQUIRED",
+                      data: {
+                        values: [
+                          { label: "Yes", value: "Yes" },
+                          { label: "No", value: "No" },
+                        ],
+                      },
+                      key: "required",
+                      properties: { aliasName: "Percentage Rent Required" },
+                      type: "select",
+                    };
+
+                    const breakPointField = {
+                      label: "BREAKPOINT",
+                      key: "breakpoint",
+                      type: "textfield",
+                    };
+
+                    const percentageField = {
+                      label: "PERCENTAGE RENT THRESHOLD",
+                      key: "percentageRentThreshold",
+                      type: "textfield",
+                    };
+
+                    panel.components.unshift(requiredField);
+                    const naturalIndex = findFieldIndex(panel.components, "Natural");
+                    const insertIndex = naturalIndex >= 0 ? naturalIndex + 1 : panel.components.length;
+                    panel.components.splice(insertIndex, 0, percentageField, breakPointField);
+                    isUpdated = true;
+                  } else if (matchesPanel(panel, "Exclusive Use")) {
+                    const hasExistingContainer = panel.components.some((item) => item.type === "container");
+                    if (hasExistingContainer) return;
+
+                    const exclusiveUseFields = [
+                      {
+                        label: "EXCLUSIVE USE DEFINITION",
+                        key: "exclusiveUseDefinition",
+                        type: "textarea",
+                      },
+                      {
+                        label: "EXCEPTION",
+                        key: "exception",
+                        type: "textarea",
+                      },
+                      {
+                        label: "REMEDY",
+                        key: "remedy",
+                        type: "textarea",
+                      },
+                      {
+                        label: "TERMINATION RIGHTS",
+                        key: "terminationRights",
+                        type: "textarea",
+                      },
+                    ];
+
+                    const requiredIndex = findFieldIndex(panel.components, "Required");
+                    const insertIndex = requiredIndex >= 0 ? requiredIndex + 1 : 0;
+                    panel.components.splice(insertIndex, 0, ...exclusiveUseFields);
+                    isUpdated = true;
+                  } else if (matchesPanel(panel, "Maintenance & Repairs")) {
+                    const hasExistingContainer = panel.components.some((item) => item.type === "container");
+                    if (hasExistingContainer) return;
+
+                    // Convert all component labels to uppercase
+                    panel.components.forEach((item) => {
+                      if (item.label) item.label = item.label.toUpperCase();
+                    });
+
+                    const maintenanceFields = [
+                      {
+                        label: "PREMISES ACCESS",
+                        key: "premisesAccess",
+                        type: "textarea",
+                      },
+                      {
+                        label: "ADMIN FEE ON SVCS",
+                        key: "adminFeeOnSvcs",
+                        type: "textarea",
+                      },
+                    ];
+
+                    const tenantRepairIndex = findFieldIndex(panel.components, "Tenant Repair");
+                    const insertIndex = tenantRepairIndex >= 0 ? tenantRepairIndex + 1 : 0;
+                    panel.components.splice(insertIndex, 0, ...maintenanceFields);
+                    isUpdated = true;
+                  }
+                }
+              });
+            }
+          });
+        }
+      });
+      return { isUpdated, tempComp: tempComp };
+    } catch (err) {
+      console.log(err);
       throw err;
     }
   }
@@ -399,13 +899,9 @@ class formService {
             if (tab.label === "Lease Clauses") {
               console.log("Lease Clause Tab Found");
               function insertPanelAfter(panelLabel, newPanels) {
-                const idx = tab.components.findIndex(
-                  (panel) =>
-                    panel.type === "panel" &&
-                    (panel.label === panelLabel || panel.title === panelLabel)
-                );
+                const idx = tab.components.findIndex((panel) => panel.type === "panel" && (panel.label === panelLabel || panel.title === panelLabel));
                 if (idx !== -1) {
-                  console.log(idx)
+                  console.log(idx);
                   // Remove duplicates if present
                   // newPanels.forEach((newPanel) => {
                   //   const exists = tab.components.some(

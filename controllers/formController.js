@@ -10,6 +10,16 @@ module.exports.updateTemplateItems = async (req, res) => {
   }
 }
 
+module.exports.updateSingleTemplateData = async (req, res) => {
+  try {
+    const data = await formService.singleTemplateUpdate(req.body)
+    return res.status(200).send(data);
+  } catch (error) {
+    console.log("error", error);
+    return res.status(500).send(error);
+  }
+}
+
 module.exports.updateTemplateFieldItems = async (req, res) => {
   try {
     await formService.updateTemplateFieldItems(req.body)
