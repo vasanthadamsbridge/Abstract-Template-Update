@@ -641,6 +641,18 @@ class formService {
       return components.findIndex((item) => item.label && item.label.toUpperCase() === targetLabel.toUpperCase());
     };
 
+    const findLastFieldIndex = (components, targetLabel) => {
+      // Find last occurrence of either matching label or key
+      for (let i = components.length - 1; i >= 0; i--) {
+        const item = components[i];
+        if (
+          (item.label && item.label.toUpperCase() === targetLabel.toUpperCase())) {
+          return i;
+        }
+      }
+      return -1; // Not found
+    };
+
     try {
       tempComp.forEach((comp) => {
         if (comp.type === "tabs") {
@@ -692,7 +704,7 @@ class formService {
                     };
 
                     panel.components.unshift(requiredField);
-                    const naturalIndex = findFieldIndex(panel.components, "Natural");
+                    const naturalIndex = findLastFieldIndex(panel.components, "Natural");
                     const insertIndex = naturalIndex >= 0 ? naturalIndex + 1 : panel.components.length;
                     panel.components.splice(insertIndex, 0, percentageField, breakPointField);
                     isUpdated = true;
@@ -723,7 +735,7 @@ class formService {
                       },
                     ];
 
-                    const requiredIndex = findFieldIndex(panel.components, "Required");
+                    const requiredIndex = findLastFieldIndex(panel.components, "Required");
                     const insertIndex = requiredIndex >= 0 ? requiredIndex + 1 : 0;
                     panel.components.splice(insertIndex, 0, ...exclusiveUseFields);
                     isUpdated = true;
@@ -749,7 +761,7 @@ class formService {
                       },
                     ];
 
-                    const tenantRepairIndex = findFieldIndex(panel.components, "Tenant Repair");
+                    const tenantRepairIndex = findLastFieldIndex(panel.components, "Tenant Repair");
                     const insertIndex = tenantRepairIndex >= 0 ? tenantRepairIndex + 1 : 0;
                     panel.components.splice(insertIndex, 0, ...maintenanceFields);
                     isUpdated = true;
